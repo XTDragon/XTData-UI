@@ -8,6 +8,7 @@
     "build": "vite build",
     "preview": "vite preview"
   },
+
   "dependencies": {
     "@element-plus/icons-vue": "^2.0.6",
     "@packy-tang/vue-tinymce": "^2.0.0-beta.1",
