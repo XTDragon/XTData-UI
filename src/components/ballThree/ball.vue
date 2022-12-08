@@ -11,7 +11,7 @@ export default {
     //创建场景
     const scene = new THREE.Scene();
     //创建透视投影相机，视角45度，画幅比例 宽比高，近平面距离0.1，远平面1000
-    const  camera = new THREE.OrthographicCamera(-10, 10, 5, -5, 0.1, 1000);
+    const camera = new THREE.OrthographicCamera(-10, 10, 5, -5, 0.1, 1000);
     //定义camera的位置
     camera.position.set(0, 0, 0);
     //创建渲染器
@@ -21,7 +21,7 @@ export default {
     //将渲染器对应的dom元素添加到body中
     document.body.appendChild(renderer.domElement);
     //定义一个几何体
-    const geometry = new THREE.SphereGeometry(1, 36,3);
+    const geometry = new THREE.SphereGeometry(1, 36, 3);
     //定义一种材质，显示为线框
     const material = new THREE.MeshBasicMaterial({color: 0xB3DD, wireframe: true});
     //网孔(Mesh)是用来承载几何模型的一个对象，可以把材料应用到它上面
@@ -30,6 +30,7 @@ export default {
     scene.add(ball);
     //移动相机位置
     camera.position.z = 1;
+
     function render() {
       //渲染循环，以每秒60次的频率来绘制场景
       requestAnimationFrame(render);

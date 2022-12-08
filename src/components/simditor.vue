@@ -21,10 +21,11 @@
 // You can also register Quill modules in the component
 import Quill from 'quill'
 import someModule from '../yourModulePath/someQuillModule.js'
+
 Quill.register('modules/someModule', someModule)
 
 export default {
-  data () {
+  data() {
     return {
       content: '<h2>I am Example</h2>',
       editorOption: {
@@ -42,7 +43,7 @@ export default {
     onEditorReady(quill) {
       console.log('editor ready!', quill)
     },
-    onEditorChange({ quill, html, text }) {
+    onEditorChange({quill, html, text}) {
       console.log('editor change!', quill, html, text)
       this.content = html
     }

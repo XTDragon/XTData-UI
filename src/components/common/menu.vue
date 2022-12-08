@@ -1,62 +1,106 @@
 <template>
-  <el-menu
-      default-active="2"
-      class="el-menu-vertical-demo"
-      @open="handleOpen"
-      @close="handleClose"
-  >
-    <el-sub-menu index="1">
-      <template #title>
-        <el-icon>
-          <location/>
-        </el-icon>
-        <span>Navigator One</span>
-      </template>
-      <el-menu-item-group title="Group One">
-        <el-menu-item index="1-1">item one</el-menu-item>
-        <el-menu-item index="1-2">item two</el-menu-item>
-      </el-menu-item-group>
-      <el-menu-item-group title="Group Two">
-        <el-menu-item index="1-3">item three</el-menu-item>
-      </el-menu-item-group>
-      <el-sub-menu index="1-4">
-        <template #title>item four</template>
-        <el-menu-item index="1-4-1">item one</el-menu-item>
-      </el-sub-menu>
-    </el-sub-menu>
-    <el-menu-item index="2">
-      <el-icon>
-        <icon-menu/>
-      </el-icon>
-      <span>Navigator Two</span>
-    </el-menu-item>
-    <el-menu-item index="3" disabled>
-      <el-icon>
-        <document/>
-      </el-icon>
-      <span>Navigator Three</span>
-    </el-menu-item>
-    <el-menu-item index="4">
-      <el-icon>
-        <setting/>
-      </el-icon>
-      <span>Navigator Four</span>
-    </el-menu-item>
-  </el-menu>
+
+  <div>
+    <a-button type="primary" style="margin-bottom: 16px" @click="toggleCollapsed">
+      <MenuUnfoldOutlined v-if="collapsed"/>
+      <MenuFoldOutlined v-else/>
+    </a-button>
+    <a-menu
+        v-model:openKeys="openKeys"
+        v-model:selectedKeys="selectedKeys"
+        mode="inline"
+        theme="dark"
+        :inline-collapsed="collapsed"
+    >
+      <a-menu-item key="1">
+        <template #icon>
+          <PieChartOutlined/>
+        </template>
+        <span>Option 1</span>
+      </a-menu-item>
+      <a-menu-item key="2">
+        <template #icon>
+          <DesktopOutlined/>
+        </template>
+        <span>Option 2</span>
+      </a-menu-item>
+      <a-menu-item key="3">
+        <template #icon>
+          <InboxOutlined/>
+        </template>
+        <span>Option 3</span>
+      </a-menu-item>
+      <a-sub-menu key="sub1">
+        <template #icon>
+          <MailOutlined/>
+        </template>
+        <template #title>Navigation One</template>
+        <a-menu-item key="5">Option 5</a-menu-item>
+        <a-menu-item key="6">Option 6</a-menu-item>
+        <a-menu-item key="7">Option 7</a-menu-item>
+        <a-menu-item key="8">Option 8</a-menu-item>
+      </a-sub-menu>
+      <a-sub-menu key="sub2">
+        <template #icon>
+          <AppstoreOutlined/>
+        </template>
+        <template #title>Navigation Two</template>
+        <a-menu-item key="9">Option 9</a-menu-item>
+        <a-menu-item key="10">Option 10</a-menu-item>
+        <a-sub-menu key="sub3" title="Submenu">
+          <a-menu-item key="11">Option 11</a-menu-item>
+          <a-menu-item key="12">Option 12</a-menu-item>
+        </a-sub-menu>
+      </a-sub-menu>
+    </a-menu>
+  </div>
 </template>
-
-<script lang="ts" setup>
+<script lang="ts">
+import {defineComponent, reactive, toRefs, watch} from 'vue';
 import {
-  Document,
-  Menu as IconMenu,
-  Location,
-  Setting,
-} from '@element-plus/icons-vue'
+  AppstoreOutlined,
+  DesktopOutlined,
+  InboxOutlined,
+  MailOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  PieChartOutlined,
+} from '@ant-design/icons-vue';
 
-const handleOpen = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath)
-}
-const handleClose = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath)
-}
+export default defineComponent({
+  components: {
+    MenuFoldOutlined,
+    MenuUnfoldOutlined,
+    PieChartOutlined,
+    MailOutlined,
+    DesktopOutlined,
+    InboxOutlined,
+    AppstoreOutlined,
+  },
+  setup() {
+    const state = reactive({
+      collapsed: false,
+      selectedKeys: ['1'],
+      openKeys: ['sub1'],
+      preOpenKeys: ['sub1'],
+    });
+
+    watch(
+        () => state.openKeys,
+        (_val, oldVal) => {
+          state.preOpenKeys = oldVal;
+        },
+    );
+    const toggleCollapsed = () => {
+      state.collapsed = !state.collapsed;
+      state.openKeys = state.collapsed ? [] : state.preOpenKeys;
+    };
+
+    return {
+      ...toRefs(state),
+      toggleCollapsed,
+    };
+  },
+});
 </script>
+

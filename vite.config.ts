@@ -2,13 +2,13 @@ import {defineConfig} from 'vite'
 import vue from '@vitejs/plugin-vue'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
-
+import {AntDesignVueResolver} from 'unplugin-vue-components/resolvers';
+import alias from "@rollup/plugin-alias";
 // https://vitejs.dev/config/
 export default defineConfig({
 
     plugins: [
         vue(),
-        
         AutoImport({ /* options */
             imports: [
                 'vue',
@@ -22,7 +22,9 @@ export default defineConfig({
             ],
             dts: 'src/auto-import.d.ts',
         }),
+
         Components({
+            resolvers: [AntDesignVueResolver()],
             // dirs 指定组件所在位置，默认为 src/components
             // 可以让我们使用自己定义组件的时候免去 import 的麻烦
             dirs: ['src/components/'],
@@ -35,6 +37,11 @@ export default defineConfig({
             deep: true
         }),
     ],
+    // resolve:{
+    //     alias: {
+    //         "/@": path.resolve(__dirname, "./src"),
+    //     },
+    // },
     server: {
         port: 3000,
         open: false, //自动打开
@@ -48,4 +55,6 @@ export default defineConfig({
             }
         }
     }
+
+
 })

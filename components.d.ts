@@ -7,6 +7,13 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    ACol: typeof import('ant-design-vue/es')['Col']
+    ALayout: typeof import('ant-design-vue/es')['Layout']
+    ALayoutContent: typeof import('ant-design-vue/es')['LayoutContent']
+    ALayoutFooter: typeof import('ant-design-vue/es')['LayoutFooter']
+    AMenu: typeof import('ant-design-vue/es')['Menu']
+    AMenuItem: typeof import('ant-design-vue/es')['MenuItem']
+    ARow: typeof import('ant-design-vue/es')['Row']
     Ball: typeof import('./src/components/ballThree/ball.vue')['default']
     BallTest: typeof import('./src/components/ballThree/ballTest.vue')['default']
     EchartsGlobe: typeof import('./src/components/echartsGlobe/echartsGlobe.vue')['default']

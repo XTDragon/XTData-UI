@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { ref } from "vue";
+import {ref} from "vue";
 import * as echarts from "echarts";
 // import HelloWorld from "@/components/HelloWorld.vue"; // @ is an alias to /src
 
@@ -18,7 +18,7 @@ export default {
       // 绘制图表
       myCharts.value = echarts.init(myChart.value!);
       myCharts.value.setOption({
-        title: { text: "总用户量" },
+        title: {text: "总用户量"},
         tooltip: {},
         xAxis: {
           data: ["12-3", "12-4", "12-5", "12-6", "12-7", "12-8"],
