@@ -102,6 +102,7 @@ export default {
       image.data.set(framebuffer_u8);
       canvas_ctx.putImageData(image, 0, 0);
 
+
       // we generate additional frames evenly before the next
       // onAnimationFrame call.
       // additional frames are generated but not displayed
