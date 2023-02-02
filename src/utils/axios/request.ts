@@ -19,15 +19,15 @@ request.interceptors.request.use(config => {
 request.interceptors.response.use(
     response => {
         let res = response.data;
-        console.log(res)
-        // 如果是返回的文件
-        if (response.config.responseType === 'blob') {
-            return res
-        }
-        // 兼容服务端返回的字符串数据
-        if (typeof res === 'string') {
-            res = res ? JSON.parse(res) : res
-        }
+        // console.log(res)
+        // // 如果是返回的文件
+        // if (response.config.responseType === 'blob') {
+        //     return res
+        // }
+        // // 兼容服务端返回的字符串数据
+        // if (typeof res === 'string') {
+        //     res = res ? JSON.parse(res) : res
+        // }
         return res;
     },
     error => {

@@ -3,11 +3,17 @@ import vue from '@vitejs/plugin-vue'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import {AntDesignVueResolver} from 'unplugin-vue-components/resolvers';
+import transform from 'babel-plugin-transform-remove-strict-mode'
 import alias from "@rollup/plugin-alias";
 // https://vitejs.dev/config/
-export default defineConfig({
 
+export default defineConfig({
+    // build:{
+    //     assetsInlineLimit:0
+    // },
+    assetsInclude: ['**/*.nes'],
     plugins: [
+        transform(),
         vue(),
         AutoImport({ /* options */
             imports: [

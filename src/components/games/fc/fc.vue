@@ -12,12 +12,15 @@
 <script>
 import jsnes from "jsnes";
 
-let nes = null;
+import axios from "axios";
+
+let nes;
 
 export default {
   name: "fc",
   setup() {
     console.log("setup")
+
     return {
       nes_mousedown(event) {
         console.log(event.clientY, event.clientX)
@@ -32,7 +35,6 @@ export default {
 
   mounted() {
     console.log("mounted")
-
     const SCREEN_WIDTH = 256;
     const SCREEN_HEIGHT = 240;
     const FRAMEBUFFER_SIZE = SCREEN_WIDTH * SCREEN_HEIGHT;
@@ -232,22 +234,31 @@ export default {
     function nes_load_url(canvas_id, path) {
       nes_init(canvas_id);
       console.log("nes_load_url")
-
-      var req = new XMLHttpRequest();
-      req.open("GET", path);
-      req.overrideMimeType("text/plain; charset=x-user-defined");
-      req.onerror = () => console.log(`Error loading ${path}: ${req.statusText}`);
-      req.onload = function () {
-        if (this.status === 200) {
-          nes_boot(this.responseText);
-        } else if (this.status === 0) {
-          console.log("sta")
-          // Aborted, so ignore error
-        } else {
-          req.onerror();
+      axios.get("/api/downloadFile/Double Dragon1.nes",{
+        responseType : "blob"
+      }).then(response =>{
+        // console.log('axios')
+        const reader = new FileReader();
+        reader.readAsBinaryString(response.data)
+        reader.onloadend=function (e) {
+          nes_boot(reader.result)
         }
-      };
-      req.send();
+      })
+      // var req = new XMLHttpRequest();
+      // req.open("GET", "/api/downloadFile/Double Dragon1.nes");
+      // req.overrideMimeType("text/plain; charset=x-user-defined");
+      // req.onerror = () => console.log(`Error loading ${path}: ${req.statusText}`);
+      // req.onload = function () {
+      //   if (this.status === 200) {
+      //     // nes_boot(req.responseText);
+      //   } else if (this.status === 0) {
+      //     console.log("sta")
+      //     // Aborted, so ignore error
+      //   } else {
+      //     req.onerror();
+      //   }
+      // };
+      // req.send();
     }
 
     const canvas = this.$refs["nes-canvas"]
@@ -268,21 +279,12 @@ export default {
         canvas.style.height = `${Math.round(parentWidth / desiredRatio)}px`;
       }
     };
-    nes_load_url(canvas, "src/components/games/fc/roms/Contra/Contra1(U)30.nes")
-
+    nes_load_url(canvas, "src/components/games/fc/roms/Double Dragon/Double Dragon2.nes")
+    // nes_load_url(canvas, "src/components/games/fc/roms/Contra/Contra1(U)30.nes")
     window.onresize();
     setInterval(() => {
       console.log(nes.getFPS());
     }, 1000);
-    return {
-      // nes_mousedown(event){
-      //   nes.zapperMove(event.clientX,event.clientY)
-      //   nes.zapperFireDown()
-      // },
-      // nes_mouseup(){
-      //   nes.zapperFireUp()
-      // }
-    }
   },
 
 }
