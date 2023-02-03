@@ -235,7 +235,7 @@ export default {
     function nes_load_url(canvas_id, path) {
       nes_init(canvas_id);
       console.log("nes_load_url")
-      axios.get("/api/downloadFile/Double Dragon1.nes",{
+      axios.get("http://114.55.64.236:9090/api/downloadFile/Double Dragon1.nes",{
         responseType : "blob"
       }).then(response =>{
         // console.log('axios')
