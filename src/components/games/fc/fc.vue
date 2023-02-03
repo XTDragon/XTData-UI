@@ -236,6 +236,9 @@ export default {
       nes_init(canvas_id);
       console.log("nes_load_url")
       axios.get("/api/downloadFile/Double Dragon1.nes",{
+        proxy: {
+          port:9090
+        },
         responseType : "blob"
       }).then(response =>{
         // console.log('axios')
