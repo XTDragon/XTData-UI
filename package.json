@@ -30,10 +30,8 @@
     "px2rem-loader": "^0.1.9",
     "simditor": "^2.3.28",
     "simplemde": "^1.11.2",
-    "three": "^0.143.0",
     "utfx": "^1.0.1",
     "vue": "^3.2.37",
-    "vue-quill-editor": "^3.0.6",
     "vue-router": "^4.1.2",
     "vuex": "^4.0.2"
   },
