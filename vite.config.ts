@@ -49,14 +49,14 @@ export default defineConfig({
     //     },
     // },
     server: {
-        port: 9090,
+        port: 3000,
         open: false, //自动打开
         base: "./ ", //生产环境路径
         proxy: { // 本地开发环境通过代理实现跨域，生产环境使用 nginx 转发
             // 正则表达式写法
             '^/api': {
                 target: 'http://114.55.64.236:9090/', // 后端服务实际地址
-                changeOrigin: false, //开启代理
+                changeOrigin: true, //开启代理
                 rewrite: (path) => path.replace(/^\/api/, '')
             }
         }
