@@ -1,15 +1,15 @@
 import {createRouter, createWebHashHistory} from 'vue-router';
-import index from '../components/index.vue'
-import fc from "../components/games/fc/fc.vue"
-import test from "../components/test.vue";
-import TDGame from "/src/views/TDGame.vue"
-
+import TDGame from "../views/TDGame.vue";
+import GameList from "../views/GameList.vue";
+import TData from "../views/TData.vue";
 // 1. 定义一些路由
 // 每个路由都需要映射到一个组件。
 // 我们后面再讨论嵌套路由。
 const routes = [
-    {path: '/', component: TDGame},
-    {path: '/main', component: TDGame},
+    {path: '/', component: TData},
+    {path: '/main', component: TData},
+    {path: '/GameList',component: GameList},
+    {path: '/Game',component: TDGame}
 ]
 
 // 2. 创建路由实例并传递 `routes` 配置

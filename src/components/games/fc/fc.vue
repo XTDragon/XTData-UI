@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 100%;height:  631px; text-align: center;">
+  <div style="width: 100%;height:  631px; text-align: center;">{{game}}
     <canvas ref="nes-canvas" id="nes-canvas" width="256" height="240" class="canvas"
             @mousedown="nes_mousedown($event)"
             @mouseup="nes_mouseup()"></canvas>
@@ -11,16 +11,15 @@
 
 <script>
 import jsnes from "jsnes";
-
 import axios from "axios";
 
 let nes;
 
 export default {
   name: "fc",
+  props:['game'],
   setup() {
     console.log("setup")
-
     return {
       nes_mousedown(event) {
         console.log(event.clientY, event.clientX)
@@ -33,8 +32,7 @@ export default {
     }
   },
 
-  mounted() {
-    console.log("mounted")
+  mounted(props) {
     const SCREEN_WIDTH = 256;
     const SCREEN_HEIGHT = 240;
     const FRAMEBUFFER_SIZE = SCREEN_WIDTH * SCREEN_HEIGHT;
@@ -51,6 +49,9 @@ export default {
     const interval = 1e3 / 55.098;
     let lastFrameTime;
     nes = null;
+
+    const canvas = this.$refs["nes-canvas"]
+
     nes = new jsnes.NES({
       onFrame: function (framebuffer_24) {
         for (var i = 0; i < FRAMEBUFFER_SIZE; i++) {
@@ -66,11 +67,12 @@ export default {
       sampleRate: getSampleRate()
     });
 
-    // function onAnimationFrame() {
-    //   image.data.set(framebuffer_u8);
-    //   canvas_ctx.putImageData(image, 0, 0);
-    //   window.requestAnimationFrame(onAnimationFrame);
-    // };
+    function onAnimationFrame(){
+      window.requestAnimationFrame(onAnimationFrame);
+
+      image.data.set(framebuffer_u8);
+      canvas_ctx.putImageData(image, 0, 0);
+    }
     function fps60() {
       window.requestAnimationFrame(fps60)
       let time = new Date().getTime();
@@ -174,7 +176,9 @@ export default {
       framebuffer_u32 = new Uint32Array(buffer);
 
       // Setup audio.
-      var audio_ctx = new window.AudioContext();
+      // var audio_ctx = new window.AudioContext();
+      var contextClass =(window.AudioContext || window.webkitAudioContext || window.mozAudioContext || window.oAudioContext || window.msAudioContext);
+      var audio_ctx = new contextClass();
       var script_processor = audio_ctx.createScriptProcessor(AUDIO_BUFFERING, 0, 2);
       script_processor.onaudioprocess = audio_callback;
       script_processor.connect(audio_ctx.destination);
@@ -232,43 +236,29 @@ export default {
       }
     }
 
-    function nes_load_url(canvas_id, path) {
+    const file =this.game
+    function nes_load_url(canvas_id, file) {
       nes_init(canvas_id);
-      console.log("nes_load_url")
-      axios.get("/api/downloadFile/Double Dragon1.nes",{
+      console.log("nes_load_url");
+      console.log(file)
+      axios.get( "/api/downLoadFile/"+ file,{
         responseType : "blob"
       }).then(response =>{
         // console.log('axios')
+        console.log(response.data)
         const reader = new FileReader();
         reader.readAsBinaryString(response.data)
         reader.onloadend=function (e) {
-          nes_boot(reader.result)
+          nes_boot(reader.result);
         }
       })
-      // var req = new XMLHttpRequest();
-      // req.open("GET", "/api/downloadFile/Double Dragon1.nes");
-      // req.overrideMimeType("text/plain; charset=x-user-defined");
-      // req.onerror = () => console.log(`Error loading ${path}: ${req.statusText}`);
-      // req.onload = function () {
-      //   if (this.status === 200) {
-      //     // nes_boot(req.responseText);
-      //   } else if (this.status === 0) {
-      //     console.log("sta")
-      //     // Aborted, so ignore error
-      //   } else {
-      //     req.onerror();
-      //   }
-      // };
-      // req.send();
     }
 
-    const canvas = this.$refs["nes-canvas"]
+
     window.onresize = () => {
       window.screenWidth = document.body.clientWidth;
       let parent = canvas.parentNode;
-      // @ts-ignore
       let parentWidth = parent.clientWidth;
-      // @ts-ignore
       let parentHeight = parent.clientHeight;
       let parentRatio = parentWidth / parentHeight;
       let desiredRatio = SCREEN_WIDTH / SCREEN_HEIGHT;
@@ -280,12 +270,11 @@ export default {
         canvas.style.height = `${Math.round(parentWidth / desiredRatio)}px`;
       }
     };
-    nes_load_url(canvas, "src/components/games/fc/roms/Double Dragon/Double Dragon2.nes")
-    // nes_load_url(canvas, "src/components/games/fc/roms/Contra/Contra1(U)30.nes")
+    nes_load_url(canvas, file)
     window.onresize();
     setInterval(() => {
       console.log(nes.getFPS());
-    }, 1000);
+    }, 2000);
   },
 
 }

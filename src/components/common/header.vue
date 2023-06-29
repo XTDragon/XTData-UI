@@ -1,47 +1,82 @@
 <template>
-  <header>
-    <a-row class="headerRow" :style="{height:64}">
-      <a-col class="headerSpan">
-        <img src="/src/assets/XTDragon.png" class="logo">
-      </a-col>
-      <a-col :style="{}">
-        <a-menu
-            v-model:selectedKeys="selectedKeys"
-            theme="light"
-            mode="horizontal"
-            :style="{lineHeight: '64px',minWidth:'300'}"
-        >
-          <a-menu-item key="1">博客</a-menu-item>
-          <a-menu-item key="2">游戏</a-menu-item>
-          <a-menu-item key="3">推荐</a-menu-item>
-        </a-menu>
-      </a-col>
-    </a-row>
-  </header>
+    <header>
+        <a-row class="headerRow">
+            <a-col class="headerSpan" :span="4">
+                <img src="/src/assets/XTDragon.png" @click="GoXTData()" class="logo">
+            </a-col>
+            <a-col :span="20">
+                <a-menu @select="handleSelect" theme="light" mode="horizontal"
+                        :style="{lineHeight: '64px',minWidth:'300'}">
+                    <a-menu-item key="1" @click="GoXTDragon()">博客</a-menu-item>
+                    <a-menu-item key="2" @click="GoGameList()">游戏</a-menu-item>
+                    <a-menu-item key="3" @click="GoTest()">test</a-menu-item>
+                    <a-menu-item key="4">推荐</a-menu-item>
+                    <a-menu-item  >
+                        <el-input v-model="input" placeholder="Please input" clearable style="width: 80% ; margin-left: 15%;margin-right: 10%;"/>
+                        <el-button @click="Search()">搜索</el-button>
+                    </a-menu-item>
+                </a-menu>
+            </a-col>
+        </a-row>
+    </header>
 </template>
 <script lang="ts" setup>
 import {router} from "../../router";
+import axios from "axios";
+
+const input = ref('')
+
+const handleSelect = (key: string, keyPath: string[]) => {
+    console.log(key, keyPath)
+}
 
 const pageback = function () {
-  router.back();
+    router.back();
+}
+
+const GoXTDragon = function () {
+    window.open('https://www.xtdragon.info', '_blank');
+}
+
+const GoXTData = function () {
+    router.push("/")
+}
+const GoGameList = function () {
+    router.push("GameList")
+}
+
+const GoTest = function () {
+    router.push("Test")
+}
+
+const Search = () => {
+    axios.get("/api/Search/", {
+        params: {
+            input: input.value,
+        }
+    }).then(response => {
+        console.log(response.data.data);
+        var data = response.data.data;
+        // tableData.value = data;
+    })
 }
 
 </script>
 
 <style scoped>
 .logo {
-  width: 200px;
-  height: 64px;
-  /*background-image: url("src/assets/XTDragon.png");*/
+    width: 100%;
+    height: 64px;
+    /*background-image: url("src/assets/XTDragon.png");*/
 }
 
 .headerSpan {
-  height: 64px;
-  margin-top: -2px;
+    height: 64px;
+    margin-top: -2px;
 }
 
 .headerRow {
-  height: 64px;
-  width: 100%;
+    height: 64px;
+    width: 100%;
 }
 </style>

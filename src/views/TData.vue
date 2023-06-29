@@ -4,8 +4,9 @@
 
     </Header>
     <a-layout-content>
-      <fc :game="game">
-      </fc>
+        <router-link to="/GameList">
+
+        </router-link>
     </a-layout-content>
     <a-layout-footer :style="{ textAlign: 'center' }">
       Ant Design ©2018 Created by Ant UED
@@ -15,16 +16,11 @@
 <script lang="ts">
 import {defineComponent, ref} from 'vue';
 import Header from "../components/common/header.vue";
-import Fc from "../components/games/fc/fc.vue";
 import {router} from "../router";
-
-//首先在setup中定义
-
 
 export default defineComponent({
   components: {
     Header,
-    Fc,
   },
   setup() {
 

@@ -14,9 +14,6 @@ declare module '@vue/runtime-core' {
     AMenu: typeof import('ant-design-vue/es')['Menu']
     AMenuItem: typeof import('ant-design-vue/es')['MenuItem']
     ARow: typeof import('ant-design-vue/es')['Row']
-    Ball: typeof import('./src/components/ballThree/ball.vue')['default']
-    BallTest: typeof import('./src/components/ballThree/ballTest.vue')['default']
-    EchartsGlobe: typeof import('./src/components/echartsGlobe/echartsGlobe.vue')['default']
     Edit: typeof import('./src/components/edit.vue')['default']
     Fc: typeof import('./src/components/games/fc/fc.vue')['default']
     Header: typeof import('./src/components/common/header.vue')['default']
@@ -26,8 +23,7 @@ declare module '@vue/runtime-core' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Simditor: typeof import('./src/components/simditor.vue')['default']
-    Snake: typeof import('./src/components/games/snake.vue')['default']
-    Test: typeof import('./src/components/test.vue')['default']
+    Test: typeof import('./src/components/games/fc/test.vue')['default']
     Undefined: typeof import('./src/components/index.vue')['default']
   }
 }

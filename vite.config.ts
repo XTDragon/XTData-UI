@@ -3,9 +3,6 @@ import vue from '@vitejs/plugin-vue'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import {AntDesignVueResolver} from 'unplugin-vue-components/resolvers';
-import transform from 'babel-plugin-transform-remove-strict-mode'
-import alias from "@rollup/plugin-alias";
-// https://vitejs.dev/config/
 
 export default defineConfig({
     // build:{
@@ -13,7 +10,6 @@ export default defineConfig({
     // },
     assetsInclude: ['**/*.nes'],
     plugins: [
-        transform(),
         vue(),
         AutoImport({ /* options */
             imports: [
@@ -43,11 +39,7 @@ export default defineConfig({
             deep: true
         }),
     ],
-    // resolve:{
-    //     alias: {
-    //         "/@": path.resolve(__dirname, "./src"),
-    //     },
-    // },
+
     server: {
         port: 3000,
         open: false, //自动打开
@@ -55,7 +47,7 @@ export default defineConfig({
         proxy: { // 本地开发环境通过代理实现跨域，生产环境使用 nginx 转发
             // 正则表达式写法
             '^/api': {
-                target: 'http://127.0.0.1:9090/', // 后端服务实际地址
+                target: 'http://127.0.0.1:9090', // 后端服务实际地址
                 changeOrigin: true, //开启代理
                 rewrite: (path) => path.replace(/^\/api/, '')
             }

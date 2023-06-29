@@ -9,7 +9,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@element-plus/icons-vue": "^2.0.6",
     "@packy-tang/vue-tinymce": "^2.0.0-beta.1",
     "@rollup/plugin-alias": "^4.0.2",
     "@wangeditor/editor": "^5.1.12",
@@ -18,10 +17,8 @@
     "ant-design-vue": "^3.2.12",
     "autoprefixer": "^10.4.12",
     "axios": "^0.27.2",
-    "babel-plugin-transform-remove-strict-mode": "^0.0.2",
     "chinese-poetry": "^1.4.1",
-    "echarts": "^5.3.3",
-    "element-plus": "^2.2.12",
+    "element-plus": "^2.2.32",
     "jsnes": "^1.2.1",
     "lib-flexible": "^0.3.2",
     "marked": "^4.0.18",
