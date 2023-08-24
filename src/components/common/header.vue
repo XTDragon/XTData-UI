@@ -12,7 +12,7 @@
                     <a-menu-item key="3" @click="GoTest()">test</a-menu-item>
                     <a-menu-item key="4">推荐</a-menu-item>
                     <a-menu-item  >
-                        <el-input v-model="input" placeholder="Please input" clearable style="width: 80% ; margin-left: 15%;margin-right: 10%;"/>
+                        <el-input v-model="input" placeholder="Please input" clearable style="width: 100% ; margin-left: 15%;margin-right: 10%;"/>
                         <el-button @click="Search()">搜索</el-button>
                     </a-menu-item>
                 </a-menu>

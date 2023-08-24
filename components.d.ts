@@ -14,6 +14,7 @@ declare module '@vue/runtime-core' {
     AMenu: typeof import('ant-design-vue/es')['Menu']
     AMenuItem: typeof import('ant-design-vue/es')['MenuItem']
     ARow: typeof import('ant-design-vue/es')['Row']
+    BlogList: typeof import('./src/components/common/blogList.vue')['default']
     Edit: typeof import('./src/components/edit.vue')['default']
     Fc: typeof import('./src/components/games/fc/fc.vue')['default']
     Header: typeof import('./src/components/common/header.vue')['default']
