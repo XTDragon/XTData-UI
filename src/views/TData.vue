@@ -4,40 +4,44 @@
 
     </Header>
     <a-layout-content>
-      <swiper
-          :modules="modules"
-          :slides-per-view="1"
-          :space-between="50"
-          navigation
-          :autoplay="{
-            delay:2500,
-            disableOnInteraction:false
-          }"
-          :loop="true"
-          :centeredSlides="true"
-          :pagination="{ clickable: true }"
-          :scrollbar="{ draggable: true }"
-          class="mySwiper"
-          @swiper="onSwiper"
-          @slideChange="onSlideChange"
-      >
-        <swiper-slide>
-          <img class="image" src="../assets/IMG_20230625_190831.jpg">
-        </swiper-slide>
-        <swiper-slide>
-          <img class="image" src="../assets/IMG_20230730_190941.jpg">
-        </swiper-slide>
-        <swiper-slide>
-          <img class="image" src="../assets/IMG_20230802_190408.jpg">
-        </swiper-slide>
-      </swiper>
+      <!--      <el-row>-->
+      <!--          <swiper-->
+      <!--              :modules="modules"-->
+      <!--              :slides-per-view="1"-->
+      <!--              :space-between="50"-->
+      <!--              navigation-->
+      <!--              class="mySwiper"-->
+      <!--              :autoplay="{-->
+      <!--            delay:2500,-->
+      <!--            disableOnInteraction:false-->
+      <!--          }"-->
+      <!--              :loop="true"-->
+      <!--              :centeredSlides="true"-->
+      <!--              :pagination="{ clickable: true }"-->
+      <!--              :scrollbar="{ draggable: true }"-->
+      <!--              @swiper="onSwiper"-->
+      <!--              @slideChange="onSlideChange"-->
+      <!--          >-->
+      <!--            <swiper-slide>-->
+      <!--              <img class="image" src="../assets/IMG_20230625_190831.jpg">-->
+      <!--            </swiper-slide>-->
+      <!--            <swiper-slide>-->
+      <!--              <img class="image" src="../assets/IMG_20230730_190941.jpg">-->
+      <!--            </swiper-slide>-->
+      <!--            <swiper-slide>-->
+      <!--              <img class="image" src="../assets/IMG_20230802_190408.jpg">-->
+      <!--            </swiper-slide>-->
+      <!--          </swiper>-->
+      <!--      </el-row>-->
+      <div style="display: flex;">
+        <div style="width: 90%">
+          <blog-list v-for="(item, key) in blogList.data" :key="key" :data="item">
+          </blog-list>
+        </div>
+        <date style="padding: 20px">
 
-      <div v-for="(item, key) in blogList.data">
+        </date>
       </div>
-
-      <blog-list v-for="(item, key) in blogList.data" :key="key" :data="item">
-      </blog-list>
-
     </a-layout-content>
     <a-layout-footer :style="{ textAlign: 'center' }">
       Ant Design ©2018 Created by Ant UED
@@ -48,7 +52,6 @@
 
 import {defineComponent, ref} from 'vue';
 import Header from "../components/common/header.vue";
-// Import Swiper Vue.js components
 
 import {Navigation, Pagination, Scrollbar, A11y} from 'swiper/modules';
 import {Swiper, SwiperSlide} from 'swiper/vue';
@@ -57,6 +60,7 @@ import {Swiper, SwiperSlide} from 'swiper/vue';
 import 'swiper/css';
 import BlogList from "../components/common/blogList.vue";
 import axios from "axios";
+import Date from '../components/date/date.vue'
 
 export default defineComponent({
   components: {
@@ -68,6 +72,8 @@ export default defineComponent({
   setup() {
     const route = useRoute()
     const game = ref(route.query.fileName);
+
+
     const onSwiper = (swiper: any) => {
       console.log(swiper);
     };
@@ -75,15 +81,16 @@ export default defineComponent({
       console.log('slide change');
     };
 
-    const blogList = reactive({ data: [] })
+    const blogList = reactive({data: []})
     const getblogList = () => {
       axios.get("/api/get/bloglist").then(response => {
-        blogList.data= response.data.data;
+        blogList.data = response.data.data;
       })
     };
     getblogList();
     console.log(blogList)
     return {
+      // date: new Date(),
       onSwiper,
       onSlideChange,
       game,
@@ -108,8 +115,7 @@ export default defineComponent({
 }
 
 .mySwiper {
-  width: 70%;
-  height: 200px;
+//width: 70%; height: 200px;
 }
 
 [data-theme='dark'] .site-layout .site-layout-background {

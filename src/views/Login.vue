@@ -11,10 +11,7 @@
         </el-form-item>
         <el-form-item>
           <el-col>
-            <el-button type="primary" style="width: 50%" @click="login">登 录</el-button>
-          </el-col>
-          <el-col>
-            <el-button type="primary" style="width: 50%" @click="get">Get</el-button>
+            <el-button type="primary" style="width: 100%" @click="login">登 录</el-button>
           </el-col>
 
         </el-form-item>
@@ -26,9 +23,8 @@
 <script setup>
 import {Lock, User} from '@element-plus/icons-vue'
 import {ElNotification} from "element-plus";
-// import request from "../utils/axios/request";
 import request from "/src/utils/axios/request"
-import {router} from "/src/router/index";
+import {router} from "../router";
 
 const {proxy} = getCurrentInstance()
 
@@ -42,8 +38,6 @@ const rules = reactive({
 })
 
 const user = reactive({
-  name: '张三',
-  passwird: 123
 })
 const changeUser = (name) => {
   user.name = name   // 通过这种方式来赋值
@@ -52,18 +46,23 @@ const changeUser = (name) => {
 const login = () => {
   proxy.$refs.ruleFormRef.validate((valid) => {
     if (valid) {
-      request.post('/api/user/login').then(res => {
-        console.log(res)
+      console.log(user.username)
+      console.log(user.password)
+      request.post('/api/user/doLogin', {
+            'username': user.username,
+            'password': user.password
+          }
+      ).then(res => {
         if (res.code === 200) {// 请求成功
-          router.push("/2")
+          router.push("/")
           ElNotification({
             type: 'success',
-            message: '用户名或密码错误'
+            message: '登录成功'
           })
         } else {  // 请求失败
           ElNotification({
             type: 'error',
-            message: res.msg
+            message: res.message
           })
         }
       })

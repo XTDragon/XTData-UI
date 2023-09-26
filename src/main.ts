@@ -7,11 +7,14 @@ import ElementPlus from 'element-plus';
 import 'element-plus/dist/index.css';
 import { createPinia } from 'pinia'
 
+import { setupCalendar } from 'v-calendar';
+
 const app = createApp(App);
 app.use(ElementPlus)
 app.use(router);
 app.use(Antd);
 app.use(createPinia())
+app.use(setupCalendar, {})
 
 app.mount('#app');
 
