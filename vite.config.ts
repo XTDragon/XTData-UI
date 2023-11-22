@@ -4,12 +4,22 @@ import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import {AntDesignVueResolver} from 'unplugin-vue-components/resolvers';
 import * as path from "path";
+import autoprefixer from "autoprefixer";
+import tailwindcss from "tailwindcss"
 
 export default defineConfig({
-
     resolve:{
         alias:{
-            "~":path.resolve(__dirname,"src")
+            "~":path.resolve(__dirname,"src"),
+            '@':path.resolve(__dirname,"src"),
+        }
+    },
+    css: {
+        postcss: {
+            plugins: [
+                tailwindcss,
+                autoprefixer,
+            ]
         }
     },
     plugins: [
@@ -42,7 +52,6 @@ export default defineConfig({
             deep: true
         }),
     ],
-
     server: {
         port: 3000,
         open: false, //自动打开

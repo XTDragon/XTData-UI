@@ -4,7 +4,7 @@
 
     </Header>
     <a-layout-content>
-      <fc :game="game">
+      <fc :game_id="game_id">
       </fc>
     </a-layout-content>
     <a-layout-footer :style="{ textAlign: 'center' }">
@@ -29,9 +29,9 @@ export default defineComponent({
   setup() {
 
     const route = useRoute()
-    const game=ref(route.query.fileName);
+    const game_id=ref(route.query.game_id);
     return {
-      game,
+      game_id,
       selectedKeys: ref<string[]>(['2']),
     };
   },

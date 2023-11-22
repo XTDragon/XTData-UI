@@ -17,7 +17,7 @@ let nes;
 
 export default {
   name: "fc",
-  props:['game'],
+  props:['game_id'],
   setup() {
     console.log("setup")
     return {
@@ -236,16 +236,16 @@ export default {
       }
     }
 
-    const file =this.game
-    function nes_load_url(canvas_id, file) {
+    const game_id =this.game_id
+    function nes_load_url(canvas_id, game_id) {
       nes_init(canvas_id);
       console.log("nes_load_url");
-      console.log(file)
-      axios.get( "/api/downLoadFile/"+ file,{
+      console.log("游戏id:",game_id)
+      axios.get( "/api/downLoadFile/"+ game_id,{
         responseType : "blob"
       }).then(response =>{
         // console.log('axios')
-        console.log(response.data)
+        // console.log(response.data)
         const reader = new FileReader();
         reader.readAsBinaryString(response.data)
         reader.onloadend=function (e) {
@@ -270,7 +270,7 @@ export default {
         canvas.style.height = `${Math.round(parentWidth / desiredRatio)}px`;
       }
     };
-    nes_load_url(canvas, file)
+    nes_load_url(canvas, game_id)
     window.onresize();
     setInterval(() => {
       console.log(nes.getFPS());

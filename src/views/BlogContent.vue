@@ -33,7 +33,6 @@ import 'github-markdown-css/github-markdown.css'
 import {defineComponent} from 'vue';
 import Header from "../components/common/header.vue";
 import axios from "axios";
-import {router} from "../router";
 import MarkdownIt from 'markdown-it';
 
 export default defineComponent({

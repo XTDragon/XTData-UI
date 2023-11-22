@@ -15,6 +15,7 @@ declare module '@vue/runtime-core' {
     AMenuItem: typeof import('ant-design-vue/es')['MenuItem']
     ARow: typeof import('ant-design-vue/es')['Row']
     BlogList: typeof import('./src/components/common/blogList.vue')['default']
+    Components: typeof import('./src/components/index.vue')['default']
     Date: typeof import('./src/components/date/date.vue')['default']
     Edit: typeof import('./src/components/edit.vue')['default']
     Fc: typeof import('./src/components/games/fc/fc.vue')['default']
@@ -27,6 +28,5 @@ declare module '@vue/runtime-core' {
     RouterView: typeof import('vue-router')['RouterView']
     Simditor: typeof import('./src/components/simditor.vue')['default']
     Test: typeof import('./src/components/games/fc/test.vue')['default']
-    Undefined: typeof import('./src/components/index.vue')['default']
   }
 }

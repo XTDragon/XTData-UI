@@ -73,7 +73,7 @@ const handleClick = (scope: TableItem) => {
     router.push({
         path: 'Game',
         query: {
-            fileName: scope.gameName,
+            gameId: scope.gameId,
         }
     })
 }
