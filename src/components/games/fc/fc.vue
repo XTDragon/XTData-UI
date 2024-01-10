@@ -1,6 +1,6 @@
 <template>
-  <div style="width: 100%;height:  631px; text-align: center;">{{game}}
-    <canvas ref="nes-canvas" id="nes-canvas" width="256" height="240" class="canvas"
+  <div style="width: 100%;height:  631px;">
+    <canvas ref="nes-canvas" id="nes-canvas" width="256" height="240" class="canvas" style="margin: auto"
             @mousedown="nes_mousedown($event)"
             @mouseup="nes_mouseup()"></canvas>
     <!--    <button onclick="window.location.reload()" style="width: 210px;background: #747bff">-->

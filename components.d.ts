@@ -19,6 +19,7 @@ declare module '@vue/runtime-core' {
     Date: typeof import('./src/components/date/date.vue')['default']
     Edit: typeof import('./src/components/edit.vue')['default']
     Fc: typeof import('./src/components/games/fc/fc.vue')['default']
+    Footer: typeof import('./src/components/common/footer.vue')['default']
     Header: typeof import('./src/components/common/header.vue')['default']
     Markdown: typeof import('./src/components/Markdown/src/Markdown.vue')['default']
     MarkdownViewer: typeof import('./src/components/Markdown/src/MarkdownViewer.vue')['default']

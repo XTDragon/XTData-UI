@@ -35,29 +35,20 @@
       <!--      </el-row>-->
 
       <div class="main-container">
-        <div class="blog-container overflow-y-hidden"  @scroll="handleScroll">
+        <div class="blog-container overflow-y-hidden" @scroll="handleScroll">
           <blog-list v-for="(item, key) in blogList.data" :key="key" :data="item">
           </blog-list>
         </div>
 
-        <!--        <InfiniteList-->
-        <!--            :data="blogList.data"-->
-        <!--            :width="'90%'"-->
-        <!--            :height="500"-->
-        <!--            :itemSize="90"-->
-        <!--            v-slot="item,index"-->
-        <!--        >-->
-        <!--          <div class="li-con"> 111 </div>-->
-        <!--          <div class="li-con"> {{item}} </div>-->
-        <!--          <div class="li-con"> {{index}} </div>-->
-        <!--        </InfiniteList>-->
-        <div>
+        <div style="position: fixed;top: 10%;left: 70%;width: 20%">
+          <div id="ww_d6a8fcf4845e7" v='1.3' loc='auto' a='{"t":"horizontal","lang":"zh","sl_lpl":1,"ids":[],"font":"Arial","sl_ics":"one_a","sl_sot":"celsius","cl_bkg":"image","cl_font":"#FFFFFF","cl_cloud":"#FFFFFF","cl_persp":"#81D4FA","cl_sun":"#FFC107","cl_moon":"#FFC107","cl_thund":"#FF5722"}'><a href="https://weatherwidget.org/zh/" id="ww_d6a8fcf4845e7_u" target="_blank">天气插件</a></div>
+          <component is="script" async src="https://app2.weatherwidget.org/js/?id=ww_d6a8fcf4845e7"></component>
           <div style="border: 5px;border-radius: 10px">
             <date style="padding: 20px;"></date>
           </div>
-          <dev style="border-radius: 10px">
-            <el-table :data="this.tableData" style="background: aqua;">
-              <el-table-column prop="gameName" label="游戏" width="280">
+          <div>
+            <el-table :data="this.tableData">
+              <el-table-column prop="gameName" label="游戏">
                 <template #default="scope">
                   <div @click="handleClick(scope.row)">
                     {{ scope.row.gameName }}
@@ -66,13 +57,12 @@
               </el-table-column>
 
             </el-table>
-          </dev>
+          </div>
         </div>
+
       </div>
     </a-layout-content>
-    <a-layout-footer :style="{ textAlign: 'center' }">
-      Ant Design ©2018 Created by Ant UED
-    </a-layout-footer>
+    <Footer></Footer>
   </a-layout>
 </template>
 <script lang="ts">
@@ -87,11 +77,12 @@ import 'swiper/css';
 import BlogList from "../components/common/blogList.vue";
 import axios from "axios";
 import {router} from '../router';
-
+import Footer from "@/components/common/footer.vue";
 
 
 export default defineComponent({
   components: {
+    Footer,
     BlogList,
     Header,
     Swiper,
@@ -114,7 +105,7 @@ export default defineComponent({
 
     const getData = () => {
       axios.get("/api/GameList").then(response => {
-        console.log(response.data.data);
+        // console.log(response.data.data);
         var data = response.data.data;
         tableData.value = data;
       })
@@ -128,7 +119,6 @@ export default defineComponent({
     };
 
     const handleClick = (scope: any) => {
-      console.log(1111)
       console.log(scope)
       router.push({
         path: 'Game',
@@ -141,17 +131,20 @@ export default defineComponent({
     const blogList = reactive({data: []})
     const getblogList = () => {
       axios.get("/api/get/bloglist").then(response => {
-        blogList.data = response.data.data;
+        var data = response.data.data;
+        for (let dataKey in data) {
+          var content =data[dataKey].content
+          data[dataKey].summary= content.toString().substring(0,200)
+          // console.log(data[dataKey].summary)
+        }
+        blogList.data = data;
       })
     };
     getblogList();
     getData();
-    console.log(blogList)
     return {
-      // date: new Date(),
       onSwiper,
       onSlideChange,
-      // game,
       blogList,
       getData,
       modules: [Navigation, Pagination, Scrollbar, A11y],
@@ -163,25 +156,12 @@ export default defineComponent({
   },
 });
 </script>
-<style scoped>
-#components-layout-demo-fixed .logo {
-  width: 120px;
-  height: 31px;
-  background: rgba(255, 255, 255, 0.2);
-  margin: 16px 24px 16px 0;
-  float: left;
-}
 
-.site-layout .site-layout-background {
-  background: #fff;
-}
+
+<style scoped>
 
 .mySwiper {
 //width: 70%; height: 200px;
-}
-
-[data-theme='dark'] .site-layout .site-layout-background {
-  background: #141414;
 }
 
 .item img {
@@ -195,20 +175,14 @@ export default defineComponent({
   transform: scale(1.1);
 }
 
-.image {
-  width: 100%;
-  height: 100%;
-  /*background-image: url("src/assets/XTDragon.png");*/
+.blog-container {
+  margin-top: 5%;
+  width: 60%;
+  margin-left: 10%;
 }
 
-.blog-container{
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-.main-container{
+.main-container {
   display: flex;
-  width: 100%;
-  overflow: hidden;
+//width: 60%; //overflow: hidden;
 }
 </style>

@@ -2,15 +2,18 @@
 import {router} from "../../router";
 
 export default {
+
   props: ['data'],
   setup() {
     const toBlogContent = (id: any) => {
-      console.log("blog" + id)
       router.push("/blog/" + id)
     }
 
+
     return {
       toBlogContent
+
+
     }
 
   },
@@ -19,38 +22,37 @@ export default {
 </script>
 
 <template>
-  <div style="background-color: #eee;font-size: 14px;padding: 10px 10px;">
+  <div style="font-size: 14px;padding: 10px 10px;">
 
     <div style="display: flex;margin: 0; background-color: #FFFFFF;border-radius: 20px;">
 
-      <div style="height: 170px;display: flex;margin: 10px 20px;border-bottom: 0px solid #cccccc;">
+      <div style="height: 170px;display: flex;margin: 0px 20px;border-bottom: 0px solid;">
 
         <div style="margin: 20px 0;width: 200px;">
 
           <el-image :src="data.imgUrl" style="height: 130px;width: 200px;object-fit: cover;cursor: pointer;"></el-image>
 
         </div>
-        <div style="margin: 30px 20px;">
-          <div style="font-size: 18px;color: #000000;cursor: pointer;" @click=toBlogContent(data.id)>{{
-              data.title
-            }}
+        <div style="margin: 20px 20px;">
+          <div style="font-size: 18px;cursor: pointer;" @click=toBlogContent(data.id)>
+            {{ data.title }}
           </div>
-          <div style="display: flex;color: #cccccc;line-height: 40px;">
+          <div style="display: flex;line-height: 40px;">
             <span class="icon-active">
-              <i class="el-icon-alarm-clock el-icon--right"></i>
+<!--              <i class="el-icon-alarm-clock el-icon&#45;&#45;right"></i>-->
               {{ data.createTime }}
             </span>
             <span class="icon-active" icon="el-icon-link" style="margin-left: 10px;">
-              <i class="el-icon-view el-icon--right"></i>
-              {{ data.lookTimes }}
+<!--              <i class="el-icon-view el-icon&#45;&#45;right"></i>-->
+              浏览量:{{ data.lookTimes }}
             </span>
             <span class="icon-active" icon="el-icon-link" style="margin-left: 10px;">
-              <i class="el-icon-chat-round el-icon--right"></i>
-              47次吐槽
+<!--              <i class="el-icon-chat-round el-icon&#45;&#45;right"></i>-->
+              评论:{{ data.comments }}
             </span>
           </div>
-          <div style="overflow: hidden;text-overflow: ellipsis;line-height: 20px;color: rgb(128,128,128);">
-            一个小时前我还觉得写月底小结是很困难的事情，现在写六月月底小结却觉得很轻松了。原本以为整个人在整个月都沉迷在工作中，细细回想起来，我是经历了很多的事情。六月...
+          <div class="summary">
+            {{ data.summary }}
           </div>
 
         </div>
@@ -60,5 +62,14 @@ export default {
 </template>
 
 <style scoped>
-
+.summary {
+  overflow: hidden;
+  //white-space: nowrap;
+  word-break: break-all;
+  display: block;
+  max-height: 60px;
+  text-overflow: ellipsis;
+  line-height: 20px;
+  font-family: Play, MArima Madurai, Microsoft JhengHei, Georgia, Times, serif, Microsoft Yahei, Open Sans, sans-serif;
+}
 </style>

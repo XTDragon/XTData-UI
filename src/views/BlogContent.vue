@@ -1,12 +1,10 @@
 <template>
-  <Header>
+  <div style="display: flex;">
+    <Header>
+    </Header>
 
-  </Header>
-  <div>
-
-    <!--    {{blog.data.content}}-->
-    <div class="mblog">
-      <div class="maction">
+    <div class="my-blog">
+      <div>
         <el-link href="/blogs">主页</el-link>
         <el-divider direction="vertical"></el-divider>
         <span>
@@ -20,12 +18,15 @@
           <el-link type="danger" @click="logout">退出</el-link>
         </span>
       </div>
-<!--      <h2>{{ blog.data.title }}</h2>-->
+      <!--      <h2>{{ blog.data.title }}</h2>-->
       <!--      <el-link icon="el-icon-edit" ><router-link :to="{name: 'BlogEdit', params: {blogId: blog.id}}">编辑</router-link></el-link>-->
-<!--      <el-divider></el-divider>-->
+      <!--      <el-divider></el-divider>-->
       <div class="content markdown-body" v-html="blog.data.content"></div>
     </div>
   </div>
+  <Footer>
+
+  </Footer>
 </template>
 
 <script lang="ts">
@@ -60,8 +61,6 @@ export default defineComponent({
         var result = md.render(response.data.data.content);
         blog.data.content = result;
       })
-
-      // blog.data.content=result;
     };
 
     getblogMarkDown();
@@ -75,9 +74,9 @@ export default defineComponent({
 });
 </script>
 
-<style>
-.mblog{
+<style scoped>
+.my-blog {
   width: 60%;
-  margin: auto;
+  margin: 5% auto auto;
 }
 </style>

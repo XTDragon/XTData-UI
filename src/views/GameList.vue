@@ -1,8 +1,9 @@
 <template>
+  <div>
     <Header>
 
     </Header>
-    <div style="background: aquamarine">
+    <div style="background: aquamarine;">
 
         <el-row>
 <!--            <el-col :span="18">-->
@@ -12,7 +13,7 @@
 <!--                <el-button @click="Search()">搜索</el-button>-->
 <!--            </el-col>-->
         </el-row>
-        <el-row>
+        <el-row style="margin-top: 5.5%">
             <dev style="margin: auto;">
                 <el-table :data="tableData"
                           style="background: aqua;">
@@ -29,6 +30,7 @@
 
         </el-row>
     </div>
+  </div>
 </template>
 
 <script lang="ts" setup>

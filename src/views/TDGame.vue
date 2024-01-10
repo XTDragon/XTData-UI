@@ -16,7 +16,6 @@
 import {defineComponent, ref} from 'vue';
 import Header from "../components/common/header.vue";
 import Fc from "../components/games/fc/fc.vue";
-import {router} from "../router";
 
 //首先在setup中定义
 
