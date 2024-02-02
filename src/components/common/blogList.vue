@@ -63,11 +63,13 @@ export default {
 
 <style scoped>
 .summary {
-  overflow: hidden;
+
+  overflow-x: hidden;
+  overflow-y: hidden;
   //white-space: nowrap;
   word-break: break-all;
-  display: block;
-  max-height: 60px;
+  display:  -webkit-box;
+  height: 45%;
   text-overflow: ellipsis;
   line-height: 20px;
   font-family: Play, MArima Madurai, Microsoft JhengHei, Georgia, Times, serif, Microsoft Yahei, Open Sans, sans-serif;

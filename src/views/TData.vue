@@ -4,6 +4,7 @@
 
     </Header>
     <a-layout-content>
+      <!--      轮播图组件-->
       <!--      <el-row>-->
       <!--          <swiper-->
       <!--              :modules="modules"-->
@@ -41,8 +42,9 @@
         </div>
 
         <div style="position: fixed;top: 10%;left: 70%;width: 20%">
-          <div id="ww_d6a8fcf4845e7" v='1.3' loc='auto' a='{"t":"horizontal","lang":"zh","sl_lpl":1,"ids":[],"font":"Arial","sl_ics":"one_a","sl_sot":"celsius","cl_bkg":"image","cl_font":"#FFFFFF","cl_cloud":"#FFFFFF","cl_persp":"#81D4FA","cl_sun":"#FFC107","cl_moon":"#FFC107","cl_thund":"#FF5722"}'><a href="https://weatherwidget.org/zh/" id="ww_d6a8fcf4845e7_u" target="_blank">天气插件</a></div>
-          <component is="script" async src="https://app2.weatherwidget.org/js/?id=ww_d6a8fcf4845e7"></component>
+          <!--          天气组件-->
+          <!--          <div id="ww_d6a8fcf4845e7" v='1.3' loc='auto' a='{"t":"horizontal","lang":"zh","sl_lpl":1,"ids":[],"font":"Arial","sl_ics":"one_a","sl_sot":"celsius","cl_bkg":"image","cl_font":"#FFFFFF","cl_cloud":"#FFFFFF","cl_persp":"#81D4FA","cl_sun":"#FFC107","cl_moon":"#FFC107","cl_thund":"#FF5722"}'><a href="https://weatherwidget.org/zh/" id="ww_d6a8fcf4845e7_u" target="_blank">天气插件</a></div>-->
+          <!--          <component is="script" async src="https://app2.weatherwidget.org/js/?id=ww_d6a8fcf4845e7"></component>-->
           <div style="border: 5px;border-radius: 10px">
             <date style="padding: 20px;"></date>
           </div>
@@ -133,9 +135,10 @@ export default defineComponent({
       axios.get("/api/get/bloglist").then(response => {
         var data = response.data.data;
         for (let dataKey in data) {
-          var content =data[dataKey].content
-          data[dataKey].summary= content.toString().substring(0,200)
-          // console.log(data[dataKey].summary)
+          var content = data[dataKey].content
+          data[dataKey].summary = content.toString().substring(0, 300)
+          data[dataKey].imgFile = content.toString().substring(0, 300)
+          console.log(data)
         }
         blogList.data = data;
       })
@@ -176,7 +179,7 @@ export default defineComponent({
 }
 
 .blog-container {
-  margin-top: 5%;
+  margin-top: 4.5%;
   width: 60%;
   margin-left: 10%;
 }
