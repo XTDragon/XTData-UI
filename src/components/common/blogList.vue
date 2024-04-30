@@ -2,22 +2,17 @@
 import {router} from "../../router";
 
 export default {
-
   props: ['data'],
-  setup() {
+  setup(props: [{}]) {
+
     const toBlogContent = (id: any) => {
       router.push("/blog/" + id)
     }
 
-
     return {
       toBlogContent
-
-
     }
-
   },
-
 };
 </script>
 
@@ -30,7 +25,8 @@ export default {
 
         <div style="margin: 20px 0;width: 200px;">
 
-          <el-image :src="data.imgUrl" style="height: 130px;width: 200px;object-fit: cover;cursor: pointer;"></el-image>
+          <el-image :src="data.imgFile"
+                    style="height: 130px;width: 200px;object-fit: cover;cursor: pointer;"></el-image>
 
         </div>
         <div style="margin: 20px 20px;">
@@ -66,9 +62,7 @@ export default {
 
   overflow-x: hidden;
   overflow-y: hidden;
-  //white-space: nowrap;
-  word-break: break-all;
-  display:  -webkit-box;
+//white-space: nowrap; word-break: break-all; display: -webkit-box;
   height: 45%;
   text-overflow: ellipsis;
   line-height: 20px;

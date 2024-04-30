@@ -63,7 +63,7 @@ const Search = () => {
             input: input.value,
         }
     }).then(response => {
-        console.log(response.data.data);
+        // console.log(response.data.data);
         var data = response.data.data;
         tableData.value = data;
     })
@@ -71,7 +71,8 @@ const Search = () => {
 getData();
 
 const handleClick = (scope: TableItem) => {
-    console.log(scope)
+  // console.log(11111)
+  //   console.log(scope.gameId)
     router.push({
         path: 'Game',
         query: {

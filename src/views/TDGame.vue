@@ -26,9 +26,9 @@ export default defineComponent({
     Fc,
   },
   setup() {
-
     const route = useRoute()
-    const game_id=ref(route.query.game_id);
+    const game_id=ref(route.query.gameId);
+    console.log(game_id)
     return {
       game_id,
       selectedKeys: ref<string[]>(['2']),

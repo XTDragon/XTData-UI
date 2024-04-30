@@ -8,7 +8,7 @@
           <a-col :span="20">
             <a-menu @select="handleSelect" theme="light" mode="horizontal"
                     :style="{lineHeight: '64px',minWidth:'300'}">
-              <a-menu-item key="1" @click="GoXTDragon()">博客</a-menu-item>
+<!--              <a-menu-item key="1" @click="GoXTDragon()">博客</a-menu-item>-->
               <a-menu-item key="2" @click="GoGameList()">游戏</a-menu-item>
               <a-menu-item key="3" @click="GoManage()">管理</a-menu-item>
               <a-menu-item key="4" @click="GoTest()">test</a-menu-item>

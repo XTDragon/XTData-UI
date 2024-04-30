@@ -5,7 +5,9 @@ import TData from "../views/TData.vue";
 import BlogContent from "../views/BlogContent.vue";
 import test from "../views/test.vue";
 import Login from "../views/Login.vue";
-import Manage from "../views/Manage.vue";
+import Manage from "../views/Manage/Manage.vue";
+import UserManage from "../views/Manage/UserManage/UserManage.vue";
+import BlogManage from "../views/Manage/BlogManage/BlogManage.vue";
 // 1. 定义一些路由
 // 每个路由都需要映射到一个组件。
 // 我们后面再讨论嵌套路由。
@@ -25,7 +27,17 @@ const routes = [
     },
     {
         path: '/Manage',
-        component: Manage
+        component: Manage,
+        children: [
+            {
+                path: '/UserManage',
+                component: UserManage
+            },
+            {
+                path: '/BlogManage',
+                component: BlogManage
+            },
+        ]
     },
     {
         path: '/Game',
@@ -40,8 +52,8 @@ const routes = [
         component: BlogContent
     },
     {
-        path: '/404',
-        name: '404',
+        path: '/test',
+        name: 'test',
         component: test
     },
     {

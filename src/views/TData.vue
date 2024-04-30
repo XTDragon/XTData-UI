@@ -37,7 +37,7 @@
 
       <div class="main-container">
         <div class="blog-container overflow-y-hidden" @scroll="handleScroll">
-          <blog-list v-for="(item, key) in blogList.data" :key="key" :data="item">
+          <blog-list v-for="(item, key) in blogList" :key="key" :data="item">
           </blog-list>
         </div>
 
@@ -85,7 +85,6 @@ import Footer from "@/components/common/footer.vue";
 export default defineComponent({
   components: {
     Footer,
-    BlogList,
     Header,
     Swiper,
     SwiperSlide,
@@ -130,18 +129,33 @@ export default defineComponent({
       })
     };
 
-    const blogList = reactive({data: []})
+    interface Blog {
+      id: number;
+      title: string;
+      img_url: string;
+      img_file: string;
+      create_time: string;
+      look_times: string;
+      comments: string;
+      content: string;
+      last_modified_time: string;
+      enable: boolean;
+    }
+
+    // let blogList = reactive({
+    //   data: [],
+    // })
+    let blogList: Blog[] = reactive([])
     const getblogList = () => {
-      axios.get("/api/get/bloglist").then(response => {
+      axios.get("/api/getbloglist").then(response => {
         var data = response.data.data;
         for (let dataKey in data) {
           var content = data[dataKey].content
           data[dataKey].summary = content.toString().substring(0, 300)
-          data[dataKey].imgFile = content.toString().substring(0, 300)
-          console.log(data)
+          blogList.push(data[dataKey]);
         }
-        blogList.data = data;
       })
+      // console.log(blogList);
     };
     getblogList();
     getData();
@@ -157,6 +171,7 @@ export default defineComponent({
       selectedKeys: ref<string[]>(['2']),
     };
   },
+
 });
 </script>
 
