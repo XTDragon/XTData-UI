@@ -3,8 +3,7 @@ import {router} from "../../router";
 
 export default {
   props: ['data'],
-  setup(props: [{}]) {
-
+  setup() {
     const toBlogContent = (id: any) => {
       router.push("/blog/" + id)
     }
@@ -62,7 +61,7 @@ export default {
 
   overflow-x: hidden;
   overflow-y: hidden;
-//white-space: nowrap; word-break: break-all; display: -webkit-box;
+/* white-space: nowrap; word-break: break-all; display: -webkit-box; */
   height: 45%;
   text-overflow: ellipsis;
   line-height: 20px;

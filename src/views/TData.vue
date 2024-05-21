@@ -36,7 +36,7 @@
       <!--      </el-row>-->
 
       <div class="main-container">
-        <div class="blog-container overflow-y-hidden" @scroll="handleScroll">
+        <div class="overflow-y-hidden blog-container" @scroll="handleScroll">
           <blog-list v-for="(item, key) in blogList" :key="key" :data="item">
           </blog-list>
         </div>
@@ -69,17 +69,49 @@
 </template>
 <script lang="ts">
 
-import {defineComponent, ref} from 'vue';
+import { defineComponent, ref } from 'vue';
 import Header from "../components/common/header.vue";
-import {Navigation, Pagination, Scrollbar, A11y} from 'swiper/modules';
-import {Swiper, SwiperSlide} from 'swiper/vue';
+import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/vue';
 
 // Import Swiper styles
 import 'swiper/css';
 import BlogList from "../components/common/blogList.vue";
 import axios from "axios";
-import {router} from '../router';
+import { router } from '../router';
 import Footer from "@/components/common/footer.vue";
+
+import { loadOml2d } from 'oh-my-live2d'
+
+loadOml2d({
+  models: [
+    {
+      "path": 'https://model.oml2d.com/cat-black/model.json',
+      "scale": 0.15,
+      "position": [0, 20],
+      "stageStyle": {
+        "height": 350
+      }
+    },
+    {
+      "path": 'https://model.oml2d.com/cat-white/model.json',
+      "scale": 0.15,
+      "position": [0, 20],
+      "stageStyle": {
+        "height": 350
+      }
+    },
+    {
+      "path": "https://model.oml2d.com/HK416-1-normal/model.json",
+      "position": [-30, 50],
+      "scale": 0.08,
+      "stageStyle": {
+        "height": 450
+      }
+    }
+  ]
+  // ...options
+});
 
 
 export default defineComponent({
@@ -177,9 +209,8 @@ export default defineComponent({
 
 
 <style scoped>
-
 .mySwiper {
-//width: 70%; height: 200px;
+  /* width: 70%; height: 200px; */
 }
 
 .item img {
@@ -201,6 +232,6 @@ export default defineComponent({
 
 .main-container {
   display: flex;
-//width: 60%; //overflow: hidden;
+  /* //width: 60%; //overflow: hidden; */
 }
 </style>

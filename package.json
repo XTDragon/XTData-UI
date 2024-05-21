@@ -26,6 +26,7 @@
     "markdown-it": "^13.0.1",
     "marked": "^4.0.18",
     "mavon-editor": "^2.10.4",
+    "oh-my-live2d": "^0.19.3",
     "pinia": "^2.1.4",
     "px2rem-loader": "^0.1.9",
     "simditor": "^2.3.28",
