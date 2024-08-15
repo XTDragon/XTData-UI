@@ -8,6 +8,7 @@ import Login from "../views/Login.vue";
 import Manage from "../views/Manage/Manage.vue";
 import UserManage from "../views/Manage/UserManage/UserManage.vue";
 import BlogManage from "../views/Manage/BlogManage/BlogManage.vue";
+import VideoPlayer from "../components/Video/VideoPlayer.vue";
 // 1. 定义一些路由
 // 每个路由都需要映射到一个组件。
 // 我们后面再讨论嵌套路由。
@@ -55,6 +56,11 @@ const routes = [
         path: '/test',
         name: 'test',
         component: test
+    },
+    {
+        path: '/test2',
+        name: 'test2',
+        component: VideoPlayer
     },
     {
         path: '/:pathMatch(.*)',

@@ -4,12 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite ",
     "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@element-plus/icons-vue": "^2.0.6",
+    "@element-plus/icons-vue": "^2.3.1",
     "@packy-tang/vue-tinymce": "^2.0.0-beta.1",
     "@popperjs/core": "^2.11.8",
     "@rollup/plugin-alias": "^4.0.2",
@@ -19,7 +19,8 @@
     "ant-design-vue": "^3.2.12",
     "axios": "^0.27.2",
     "chinese-poetry": "^1.4.1",
-    "element-plus": "^2.2.32",
+    "dplayer": "^1.27.1",
+    "element-plus": "^2.7.8",
     "github-markdown-css": "^5.2.0",
     "jsnes": "^1.2.1",
     "lib-flexible": "^0.3.2",
@@ -36,12 +37,17 @@
     "v-calendar": "^3.0.3",
     "vue": "^3.2.37",
     "vue-router": "^4.1.2",
-    "vue3-infinite-list": "^0.2.5"
+    "vue-video-player": "^6.0.0",
+    "vue3-infinite-list": "^0.2.5",
+    "vue3-video-play": "^1.3.2"
   },
   "devDependencies": {
+    "@types/dplayer": "^1.25.5",
     "@types/markdown-it": "^13.0.0",
     "@vitejs/plugin-vue": "^3.0.0",
-    "autoprefixer": "^10.4.16",
+    "autoprefixer": "^10.4.19",
+    "browserslist": "^4.23.2",
+    "caniuse-lite": "^1.0.30001643",
     "postcss": "^8.4.31",
     "tailwindcss": "^3.3.3",
     "typescript": "^4.6.4",

@@ -135,7 +135,7 @@ const changeEnable = (blog: BlogData) => {
       <el-table-column fixed="right" label="操作" align="center" width="120">
         <template #default="scope">
           <el-button link type="primary" size="small" @click="handleClickCommit(scope.row)">提交</el-button>
-          <el-button link type="primary" size="small" @click="handleClickDelete(scope.row.id)">删除</el-button>
+          <el-button link type="danger" size="small" @click="handleClickDelete(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>

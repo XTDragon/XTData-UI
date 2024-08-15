@@ -74,10 +74,10 @@ const handleClose = (key: string, keyPath: string[]) => {
 
           </el-main>
           <el-footer>
-            footer
-<!--            <Footer>-->
+            <!-- footer -->
+           <Footer>
 
-<!--            </Footer>-->
+           </Footer>
           </el-footer>
         </el-container>
       </el-container>

@@ -49,7 +49,7 @@
             <date style="padding: 20px;"></date>
           </div>
           <div>
-            <el-table :data="this.tableData">
+            <el-table :data="tableData">
               <el-table-column prop="gameName" label="游戏">
                 <template #default="scope">
                   <div @click="handleClick(scope.row)">
@@ -84,6 +84,14 @@ import Footer from "@/components/common/footer.vue";
 import { loadOml2d } from 'oh-my-live2d'
 
 loadOml2d({
+  initialStatus: "sleep",
+  tips: {
+    idleTips: {
+      wordTheDay(wordTheDayData) {
+        return `${wordTheDayData.hitokoto}    by.${wordTheDayData.from}`;
+      }
+    }
+  },
   models: [
     {
       "path": 'https://model.oml2d.com/cat-black/model.json',
