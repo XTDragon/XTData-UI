@@ -15,13 +15,30 @@ const submitUpload = () => {
   params.append("multipartFile", file.value.raw);
   console.log(params.get("fileName"));
   axios.post("/api/upload", params).then(response => {
-    console.log(response);
+    if (response.data.code === 200) {
+      ElNotification({
+        type: 'success',
+        message: '上传成功'
+      })
+    } else {  // 请求失败
+      ElNotification({
+        type: 'error',
+        message: response.data.message
+      })
+    }
+
   })
 }
 
-import type { UploadInstance } from 'element-plus'
-import 'element-plus/dist/index.css';
-const uploadRef = ref<UploadInstance>()
+import type { UploadContext } from 'element-plus'
+const uploadRef = ref<UploadContext>()
+
+const currentPage = ref(1)
+const pageSize = ref(5)
+const small = ref(false)
+const background = ref(false)
+const disabled = ref(false)
+const total = ref()
 
 const playerOptions = {
   playbackRates: [0.5, 1.0, 1.5, 2.0], // 播放速度
@@ -56,52 +73,37 @@ const playerOptions = {
   }
 };
 
-const videos = [{
-  id: 1,
-  title: "vue3黑马教程",
-  upName: "XTDragon",
-  up: "XTDragon",
-  play: "ssss",
-  time: "2022-11-18",
-},
-{
-  id: 1,
-  title: "vue3黑马教程+typescript+piana",
-  upName: "test",
-  up: "test",
-  play: "ssss",
-  time: "2022-11-18",
-},
-{
-  id: 1,
-  title: "这文本格式也太傻吊了吧！！！！！",
-  upName: "test",
-  up: "test",
-  play: "ssss",
-  time: "2022-11-18",
-},
-{
-  id: 1,
-  title: "1",
-  upName: "test",
-  up: "test",
-  play: "ssss",
-  time: "2022-11-18",
-},{
-  id: 1,
-  title: "1",
-  upName: "test",
-  up: "test",
-  play: "ssss",
-  time: "2022-11-18",
-},{
-  id: 1,
-  title: "1",
-  upName: "test",
-  up: "test",
-  play: 1,
-  time: "2022-11-18",
-}]
+const videos = ref();
+
+const handleSizeChange = (val: number) => {
+  pageSize.value = val;
+  getVideoPage();
+}
+const handleCurrentChange = (val: number) => {
+  currentPage.value = val;
+  getVideoPage();
+}
+
+const getVideoPage = () => {
+  axios.get("/api/video/page", {
+    params: {
+      pageSize: pageSize.value,
+      currentPage: currentPage.value,
+    }
+  }).then(response => {
+    console.log(response.data.data)
+    total.value = response.data.data.total;
+    videos.value = response.data.data.list;
+
+  })
+};
+getVideoPage();
+
+const getVideoById = (param: String) => {
+  return "http://localhost:9090/video/get/" + param
+  axios.get("/api/video/" + param).then(response => {
+  })
+};
 
 </script>
 
@@ -114,34 +116,38 @@ const videos = [{
         <li v-for="(item, index) in videos" :key="index">
           <div class="border-container">
             <div class="img-container">
-              <a :href="'https://kotokawa-akira-mywife.site/web/Video/' + item.id" target="_blank">
+              <a :href="getVideoById(item.id)" target="_blank">
                 <img :src="'https://pic.imgdb.cn/item/64a77dec1ddac507ccc7c590.jpg'" alt="" loading="lazy">
               </a>
             </div>
             <a :href="'https://kotokawa-akira-mywife.site/web/Video/' + item.id" target="_blank">
-              <div class="main-recommend-li-title" :title="item.title">
-                {{ item.title }}
+              <div class="main-recommend-li-title" :title="item.fileName">
+                {{ item.fileName }}
               </div>
             </a>
             <div class="main-recommend-li-detail-container">
-              <div class="main-recommend-li-detail" :title="item.upName">
+              <div class="main-recommend-li-detail" :title="item.fileSize">
                 <a :href="'https://kotokawa-akira-mywife.site/web/Mine/' + item.up" target="_blank">
                   <div class="upName_span">
-                    {{ item.upName }}
+                    {{ item.fileSize }}
                   </div>
                 </a>
               </div>
               <div style="width:50%" class="main-recommend-li-detail ">
                 <div class="main-recommend-li-detail-play">
-                  <el-icon><VideoPlay /> </el-icon>
+                  <el-icon>
+                    <VideoPlay />
+                  </el-icon>
                   <span>
-                       {{ item.play }}
+                    {{ item.fileSize }}
                   </span>
-               
+
                 </div>
                 <div class="main-recommend-li-detail-play">
-                  <el-icon><Clock /></el-icon>
-                  <span>{{ item.time.slice(0, 10) }}</span>
+                  <el-icon>
+                    <Clock />
+                  </el-icon>
+                  {{ item.fileType }}
                 </div>
               </div>
             </div>
@@ -156,20 +162,34 @@ const videos = [{
 
   <!-- <video-player class="video-player vjs-custom-skin" ref="videoPlayer" :playsinline="true" :options="playerOptions">
   </video-player> -->
-
-  <el-upload ref="uploadRef" :on-change="changeFile" :auto-upload="false">
-    <template #trigger>
-      <el-button type="primary">select file</el-button>
-    </template>
-    <el-button class="ml-3" type="success" @click="submitUpload">
-      upload to server
-    </el-button>
-    <template #tip>
+  <div style="display: flex;justify-content: center;align-items: center">
+    <el-upload ref="uploadRef" :on-change="changeFile" :auto-upload="false">
+      <!-- <template #trigger>
+          <el-button style="display: inline-flex;border: 0cap;" type="primary">select file</el-button>
+        </template>
+<div>
+  <el-button type="success" style="display: inline-flex;border: 0cap;" @click="submitUpload"> upload to server
+  </el-button>
+</div> -->
+      <template #trigger>
+        <el-button type="primary">select file</el-button>
+      </template>
+      <el-button class="ml-3" type="success" @click="submitUpload">
+        upload to server
+      </el-button>
+      <!-- <template #tip>
       <div class="el-upload__tip">
         jpg/png files with a size less than 500kb
       </div>
-    </template>
-  </el-upload>
+    </template> -->
+    </el-upload>
+  </div>
+
+
+  <el-pagination style="text-align: center;display: flex;justify-content: center;margin-top: 10px"
+    :current-page="currentPage" :page-size="pageSize" :page-sizes="[5, 10, 20, 40]" :small="small" :disabled="disabled"
+    :background="background" layout="total, sizes, prev, pager, next, jumper" :total="total"
+    @size-change="handleSizeChange" @current-change="handleCurrentChange" />
 
 </template>
 
@@ -258,9 +278,8 @@ const videos = [{
 
 
 .main-recommend-li-title {
-  height: 10vh;
+  height: 8vh;
   overflow: hidden;
-  word-wrap: break-all;
   /* 对英文有效，在溢出处换行 */
   word-break: break-all;
   text-overflow: ellipsis;
@@ -315,8 +334,9 @@ const videos = [{
 }
 
 .main-recommend-li-detail-play {
-  display: flex;  
-  align-items: center; /* 垂直居中 */  
+  display: flex;
+  align-items: center;
+  /* 垂直居中 */
   padding-right: 5px;
   white-space: nowrap;
 }
@@ -388,11 +408,6 @@ const videos = [{
     width: 10px;
   }
 
-  .main-recommend-li-title {
-    font-size: 14px;
-    height: 35px;
-  }
-
   .load-more {
     display: none;
   }
@@ -417,11 +432,6 @@ const videos = [{
     width: 10px;
   }
 
-  .main-recommend-li-title {
-    font-size: 14px;
-    height: 35px;
-  }
-
   .main-view li {
     width: 33%;
   }
@@ -442,11 +452,6 @@ const videos = [{
     width: 10px;
   }
 
-  .main-recommend-li-title {
-    font-size: 14px;
-    height: 35px;
-  }
-
   .main-view li {
     width: 25%;
   }
@@ -465,11 +470,6 @@ const videos = [{
   .main-recommend-li-detail svg {
     height: 12px;
     width: 12px;
-  }
-
-  .main-recommend-li-title {
-    font-size: 16px;
-    height: 40px;
   }
 }
 </style>
