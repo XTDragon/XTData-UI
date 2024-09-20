@@ -174,7 +174,7 @@ export default {
   justify-content: center;
   align-items: center;
   border-radius: 50%;
-  //background-color: burlywood;
+  /* background-color: burlywood; */
 }
 
 .days {
@@ -182,7 +182,7 @@ export default {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   grid-gap: 10px;
-  //border-radius: 50%;
+  /* border-radius: 50%; */
   text-align: center;
 }
 

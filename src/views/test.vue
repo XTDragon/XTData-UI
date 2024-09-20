@@ -3,6 +3,7 @@
 import axios from "axios";
 import 'video.js/dist/video-js.css'
 import { VideoPlayer } from 'vue-video-player'
+import { CopyDocument, Download } from '@element-plus/icons-vue'
 
 const file = ref()
 const changeFile = (uploadFile: any) => {
@@ -30,11 +31,21 @@ const submitUpload = () => {
   })
 }
 
+const copyFileUrl = (e: any) => {
+  let url = "http://localhost:9090/video/get/" + e.id // 当前页面链接
+  console.log(url);
+
+  navigator.clipboard.writeText(url)
+  ElMessage({
+    type: 'success',
+    message: "复制链接成功，可以粘贴",
+  })
+}
+
 import type { UploadContext } from 'element-plus'
 const uploadRef = ref<UploadContext>()
-
 const currentPage = ref(1)
-const pageSize = ref(5)
+const pageSize = ref(10)
 const small = ref(false)
 const background = ref(false)
 const disabled = ref(false)
@@ -99,11 +110,29 @@ const getVideoPage = () => {
 };
 getVideoPage();
 
-const getVideoById = (param: String) => {
-  return "http://localhost:9090/video/get/" + param
-  axios.get("/api/video/" + param).then(response => {
+const getVideoById = (param: any) => {
+  axios.get("/api/video/get/" + param.id).then(resp => {
+    console.log(resp.data);
+    const blob = new Blob([resp.data])
+    const downloadElement = document.createElement('a');
+    downloadElement.href = URL.createObjectURL(blob)
+    downloadElement.download = param.fileName
+    document.body.appendChild(downloadElement)
+    downloadElement.click()
+    document.body.removeChild(downloadElement)
   })
 };
+
+import {videoStore} from '@/stores/videoStore'
+import {globalStore} from '@/stores/globalStore'
+import { router } from "@/router";
+
+const store = videoStore()
+const global = globalStore()
+const playVideo = ( param : any)=>{
+  store.videoUrl= global.frotendUrl + "/api/video/get/" + param.id
+  router.push("/Test2")
+}
 
 </script>
 
@@ -116,22 +145,22 @@ const getVideoById = (param: String) => {
         <li v-for="(item, index) in videos" :key="index">
           <div class="border-container">
             <div class="img-container">
-              <a :href="getVideoById(item.id)" target="_blank">
-                <img :src="'https://pic.imgdb.cn/item/64a77dec1ddac507ccc7c590.jpg'" alt="" loading="lazy">
+              <a v-on:click="playVideo(item)" target="_blank">
+                <img alt="" loading="lazy">
               </a>
             </div>
-            <a :href="'https://kotokawa-akira-mywife.site/web/Video/' + item.id" target="_blank">
+            <a v-on:click="playVideo(item)" target="_blank">
               <div class="main-recommend-li-title" :title="item.fileName">
                 {{ item.fileName }}
               </div>
             </a>
             <div class="main-recommend-li-detail-container">
               <div class="main-recommend-li-detail" :title="item.fileSize">
-                <a :href="'https://kotokawa-akira-mywife.site/web/Mine/' + item.up" target="_blank">
-                  <div class="upName_span">
-                    {{ item.fileSize }}
-                  </div>
-                </a>
+                <el-row>
+      
+                  <el-button @click="copyFileUrl(item)" :icon="CopyDocument" />
+                  <el-button @click="getVideoById(item)" :icon="Download" />
+                </el-row>
               </div>
               <div style="width:50%" class="main-recommend-li-detail ">
                 <div class="main-recommend-li-detail-play">
@@ -160,6 +189,10 @@ const getVideoById = (param: String) => {
   </main>
 
 
+
+
+
+
   <!-- <video-player class="video-player vjs-custom-skin" ref="videoPlayer" :playsinline="true" :options="playerOptions">
   </video-player> -->
   <div style="display: flex;justify-content: center;align-items: center">
@@ -172,11 +205,22 @@ const getVideoById = (param: String) => {
   </el-button>
 </div> -->
       <template #trigger>
-        <el-button type="primary">select file</el-button>
+        <el-button class="ml-3" type="success">
+          Select File
+          <el-icon>
+            <Files />
+          </el-icon>
+        </el-button>
       </template>
-      <el-button class="ml-3" type="success" @click="submitUpload">
-        upload to server
+      <el-button class="ml-3" type="primary" @click="submitUpload">
+        Upload
+        <el-icon>
+          <Upload />
+        </el-icon>
       </el-button>
+      <!-- <el-button class="ml-3" type="success" @click="submitUpload">
+        upload to server
+      </el-button> -->
       <!-- <template #tip>
       <div class="el-upload__tip">
         jpg/png files with a size less than 500kb
@@ -187,7 +231,7 @@ const getVideoById = (param: String) => {
 
 
   <el-pagination style="text-align: center;display: flex;justify-content: center;margin-top: 10px"
-    :current-page="currentPage" :page-size="pageSize" :page-sizes="[5, 10, 20, 40]" :small="small" :disabled="disabled"
+    :current-page="currentPage" :page-size="pageSize" :page-sizes="[10, 20, 30, 40]" :small="small" :disabled="disabled"
     :background="background" layout="total, sizes, prev, pager, next, jumper" :total="total"
     @size-change="handleSizeChange" @current-change="handleCurrentChange" />
 

@@ -49,7 +49,7 @@
             <date style="padding: 20px;"></date>
           </div>
           <div>
-            <el-table :data="tableData">
+            <el-table :data="tableData" style="height: 45vh ;">
               <el-table-column prop="gameName" label="游戏">
                 <template #default="scope">
                   <div @click="handleClick(scope.row)">

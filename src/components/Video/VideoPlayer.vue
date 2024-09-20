@@ -1,12 +1,19 @@
 <script setup lang="ts">
 
 import DPlayer from 'dplayer';
+import Header from '../common/header.vue';
+import {videoStore} from '@/stores/videoStore'
 const dplayer = ref()
 let dp: any;
+
+const store = videoStore()
+
+
+
 const initPlayer = () => {
     dp = new DPlayer({
         container: dplayer.value,
-        autoplay: false,
+        autoplay: true,
         theme: '#b7daff',
         loop: false,
         lang: navigator.language.toLowerCase(),
@@ -16,7 +23,7 @@ const initPlayer = () => {
         volume: 0.7,
         mutex: true,
         video: {
-            url: 'http://localhost:3000/api/video/get/2',
+            url: store.videoUrl,
             type: 'auto',
         },
         subtitle: {
@@ -66,10 +73,20 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
+    <Header>
+
+    </Header>
+
     <div class="dplayer" ref="dplayer"></div>
+
+    <Footer>
+    </Footer>
 </template>
 
 <style scoped>
 .dplayer {
+    width: 170vh; 
+    height: 96vh;
+    margin: 0 auto;
 }
 </style>
