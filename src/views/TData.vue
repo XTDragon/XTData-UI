@@ -52,7 +52,7 @@
             <el-table :data="tableData" style="height: 45vh ;">
               <el-table-column prop="gameName" label="游戏">
                 <template #default="scope">
-                  <div @click="handleClick(scope.row)">
+                  <div @click="handleClick(scope.row.gameId)">
                     {{ scope.row.gameName }}
                   </div>
                 </template>
@@ -76,12 +76,12 @@ import { Swiper, SwiperSlide } from 'swiper/vue';
 
 // Import Swiper styles
 import 'swiper/css';
-import BlogList from "../components/common/blogList.vue";
 import axios from "axios";
 import { router } from '../router';
 import Footer from "@/components/common/footer.vue";
 
 import { loadOml2d } from 'oh-my-live2d'
+
 
 loadOml2d({
   initialStatus: "sleep",
@@ -131,9 +131,8 @@ export default defineComponent({
   },
   setup() {
     const route = useRoute()
-
+     
     // const game = ref(route.query.fileName);
-
     interface TableItem {
       gameName: string;
     }
@@ -217,9 +216,6 @@ export default defineComponent({
 
 
 <style scoped>
-.mySwiper {
-  /* width: 70%; height: 200px; */
-}
 
 .item img {
   width: 100%;

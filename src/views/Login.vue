@@ -11,7 +11,7 @@
         </el-form-item>
         <el-form-item>
           <el-col>
-            <el-button type="primary" style="width: 100%" @click="login">登 录</el-button>
+            <el-button type="primary" style="width: 100%" @click="loginsubmit">登 录</el-button>
           </el-col>
 
         </el-form-item>
@@ -25,6 +25,7 @@ import {Lock, User} from '@element-plus/icons-vue'
 import {ElNotification} from "element-plus";
 import request from "/src/utils/axios/request"
 import {router} from "../router";
+import { setToken } from '@/utils/auth';
 
 const {proxy} = getCurrentInstance()
 
@@ -39,22 +40,19 @@ const rules = reactive({
 
 const user = reactive({
 })
-const changeUser = (name) => {
-  user.name = name   // 通过这种方式来赋值
-}
 
-const login = () => {
+const loginsubmit = () => {
   proxy.$refs.ruleFormRef.validate((valid) => {
     if (valid) {
-      console.log(user.username)
-      console.log(user.password)
       request.post('/api/user/doLogin', {
             'username': user.username,
             'password': user.password
           }
       ).then(res => {
         if (res.code === 200) {// 请求成功
-          router.push("/")
+          window.sessionStorage.clear()
+          window.localStorage.clear()
+          setToken("satoken",res.data)
           ElNotification({
             type: 'success',
             message: '登录成功'
@@ -72,13 +70,6 @@ const login = () => {
         message: '用户名或密码错误'
       })
     }
-  })
-}
-
-
-const get = () => {
-  request.get('/api/user/get').then(res => {
-    console.log(res)
   })
 }
 </script>

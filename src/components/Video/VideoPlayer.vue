@@ -2,7 +2,7 @@
 
 import DPlayer from 'dplayer';
 import Header from '../common/header.vue';
-import {videoStore} from '@/stores/videoStore'
+import {videoStore} from '@/store/videoStore'
 const dplayer = ref()
 let dp: any;
 

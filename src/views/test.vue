@@ -1,519 +1,537 @@
-<script setup lang="ts">
-
-import axios from "axios";
-import 'video.js/dist/video-js.css'
-import { VideoPlayer } from 'vue-video-player'
-import { CopyDocument, Download } from '@element-plus/icons-vue'
-
-const file = ref()
-const changeFile = (uploadFile: any) => {
-  file.value = uploadFile;
-}
-
-const submitUpload = () => {
-  const params = new FormData()
-  params.append("fileName", file.value.name);
-  params.append("multipartFile", file.value.raw);
-  console.log(params.get("fileName"));
-  axios.post("/api/upload", params).then(response => {
-    if (response.data.code === 200) {
-      ElNotification({
-        type: 'success',
-        message: '上传成功'
-      })
-    } else {  // 请求失败
-      ElNotification({
-        type: 'error',
-        message: response.data.message
-      })
-    }
-
-  })
-}
-
-const copyFileUrl = (e: any) => {
-  let url = "http://localhost:9090/video/get/" + e.id // 当前页面链接
-  console.log(url);
-
-  navigator.clipboard.writeText(url)
-  ElMessage({
-    type: 'success',
-    message: "复制链接成功，可以粘贴",
-  })
-}
-
-import type { UploadContext } from 'element-plus'
-const uploadRef = ref<UploadContext>()
-const currentPage = ref(1)
-const pageSize = ref(10)
-const small = ref(false)
-const background = ref(false)
-const disabled = ref(false)
-const total = ref()
-
-const playerOptions = {
-  playbackRates: [0.5, 1.0, 1.5, 2.0], // 播放速度
-  autoplay: false, //如果true,浏览器准备好时开始回放。
-  muted: false, // 默认情况下将会消除任何音频。
-  loop: false, // 导致视频一结束就重新开始。
-  // preload: 'auto', // 建议浏览器在<video>加载元素后是否应该开始下载视频数据。auto浏览器选择最佳行为,立即开始加载视频（如果浏览器支持）
-  language: 'zh-CN',
-  aspectRatio: '4:3', // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
-  fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
-  sources: [
-    // {
-    //   type: "video/mp4",// 这里的种类支持很多种：基本视频格式、直播、流媒体等，具体可以参看git网址项目
-    //   src: "http://vjs.zencdn.net/v/oceans.mp4" // url地址
-    // },
-    {
-      type: "video/mp4",// 这里的种类支持很多种：基本视频格式、直播、流媒体等，具体可以参看git网址项目
-      src: "http://localhost:3000/api/video/get/2" // url地址
-    },
-  ],
-  // poster: "https://p1.music.126.net/5zs7IvmLv7KahY3BFzUmrg==/109951163635241613.jpg?param=600y500", // 你的封面地址
-  notSupportedMessage: '此视频暂无法播放，请稍后再试', // 允许覆盖Video.js无法播放媒体源时显示的默认信息。
-  controls: true,
-  controlBar: {
-    timeDivider: true,    //当前时间和持续时间的分隔符
-    durationDisplay: true,  //显示持续时间
-    remainingTimeDisplay: false,   //是否显示剩余时间功能
-    fullscreenToggle: true,  //全屏按钮
-    playToggle: true, //播放暂停按钮
-    volumeMenuButton: false,  //音量控制
-    currentTimeDisplay: true, //当前播放时间
-  }
-};
-
-const videos = ref();
-
-const handleSizeChange = (val: number) => {
-  pageSize.value = val;
-  getVideoPage();
-}
-const handleCurrentChange = (val: number) => {
-  currentPage.value = val;
-  getVideoPage();
-}
-
-const getVideoPage = () => {
-  axios.get("/api/video/page", {
-    params: {
-      pageSize: pageSize.value,
-      currentPage: currentPage.value,
-    }
-  }).then(response => {
-    console.log(response.data.data)
-    total.value = response.data.data.total;
-    videos.value = response.data.data.list;
-
-  })
-};
-getVideoPage();
-
-const getVideoById = (param: any) => {
-  axios.get("/api/video/get/" + param.id).then(resp => {
-    console.log(resp.data);
-    const blob = new Blob([resp.data])
-    const downloadElement = document.createElement('a');
-    downloadElement.href = URL.createObjectURL(blob)
-    downloadElement.download = param.fileName
-    document.body.appendChild(downloadElement)
-    downloadElement.click()
-    document.body.removeChild(downloadElement)
-  })
-};
-
-import {videoStore} from '@/stores/videoStore'
-import {globalStore} from '@/stores/globalStore'
-import { router } from "@/router";
-
-const store = videoStore()
-const global = globalStore()
-const playVideo = ( param : any)=>{
-  store.videoUrl= global.frotendUrl + "/api/video/get/" + param.id
-  router.push("/Test2")
-}
-
-</script>
-
 <template>
-  <Header></Header>
-
-  <main class="main-view">
-    <section>
-      <ul>
-        <li v-for="(item, index) in videos" :key="index">
-          <div class="border-container">
-            <div class="img-container">
-              <a v-on:click="playVideo(item)" target="_blank">
-                <img alt="" loading="lazy">
-              </a>
-            </div>
-            <a v-on:click="playVideo(item)" target="_blank">
-              <div class="main-recommend-li-title" :title="item.fileName">
-                {{ item.fileName }}
-              </div>
-            </a>
-            <div class="main-recommend-li-detail-container">
-              <div class="main-recommend-li-detail" :title="item.fileSize">
-                <el-row>
-      
-                  <el-button @click="copyFileUrl(item)" :icon="CopyDocument" />
-                  <el-button @click="getVideoById(item)" :icon="Download" />
-                </el-row>
-              </div>
-              <div style="width:50%" class="main-recommend-li-detail ">
-                <div class="main-recommend-li-detail-play">
-                  <el-icon>
-                    <VideoPlay />
-                  </el-icon>
-                  <span>
-                    {{ item.fileSize }}
-                  </span>
-
-                </div>
-                <div class="main-recommend-li-detail-play">
-                  <el-icon>
-                    <Clock />
-                  </el-icon>
-                  {{ item.fileType }}
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </li>
-      </ul>
-      <!-- <div class="loadmore" v-show="isLoading" ref="loadmore">正在加载···</div> -->
-    </section>
-  </main>
-
-
-
-
-
-
-  <!-- <video-player class="video-player vjs-custom-skin" ref="videoPlayer" :playsinline="true" :options="playerOptions">
-  </video-player> -->
-  <div style="display: flex;justify-content: center;align-items: center">
-    <el-upload ref="uploadRef" :on-change="changeFile" :auto-upload="false">
-      <!-- <template #trigger>
-          <el-button style="display: inline-flex;border: 0cap;" type="primary">select file</el-button>
-        </template>
-<div>
-  <el-button type="success" style="display: inline-flex;border: 0cap;" @click="submitUpload"> upload to server
-  </el-button>
-</div> -->
-      <template #trigger>
-        <el-button class="ml-3" type="success">
-          Select File
-          <el-icon>
-            <Files />
-          </el-icon>
-        </el-button>
-      </template>
-      <el-button class="ml-3" type="primary" @click="submitUpload">
-        Upload
-        <el-icon>
-          <Upload />
-        </el-icon>
-      </el-button>
-      <!-- <el-button class="ml-3" type="success" @click="submitUpload">
-        upload to server
-      </el-button> -->
-      <!-- <template #tip>
-      <div class="el-upload__tip">
-        jpg/png files with a size less than 500kb
-      </div>
-    </template> -->
-    </el-upload>
+  <div id="test">
+    <div class="logo">
+      <img src="../assets/BILIBILI_LOGO.svg" draggable="false" />
+    </div>
+    <div class="input_search">
+      <input type="text" placeholder="请输入视频链接..." @input="change" @keyup.enter="download" v-model.trim="videoUrl" />
+      <button @click="download">获取</button>
+    </div>
+    <div class="use-info">
+      <el-collapse :accordion="true" v-model="activeNames">
+        <el-collapse-item v-show="downloadUrl != '' && videoUrl != ''" title="视频地址" name="视频地址">
+          <p>{{downloadUrl}}</p>
+          <p>
+            <a :href="downloadUrl" target="_blank">预览视频</a>
+            <a href v-show="downVideoStatus == false" @click.prevent="downVideo">下载视频</a>
+            <a href v-show="downVideoStatus == true" @click.prevent="cancelDownload">取消下载</a>
+            <el-progress v-show="downVideoStatus == true" :percentage="progress"></el-progress>
+          </p>
+        </el-collapse-item>
+        <el-collapse-item v-show="bgUrl != '' && videoUrl != ''" title="封面地址" name="2">
+          <p>{{imgUrl}}</p>
+          <p>
+            <a rel="noreferrer" :href="imgUrl" target="_blank">预览图片</a>
+          </p>
+        </el-collapse-item>
+        <el-collapse-item title="使用说明" name="3">
+          <p>1. 手机，复制视频链接即可</p>
+          <p>2. 手机分集视频，分享在浏览器打开，再复制地址栏链接下载</p>
+          <p>3. 电脑，复制地址栏地址即可</p>
+          <p>4. 如果不行就是作者不允许下载</p>
+          <p>5. 图片可以长按进行保存</p>
+          <p>6. 电脑可用Ctrl+B快速清空输入</p>
+          <p>7. 作者很棒，<a href="https://space.bilibili.com/1608325226" target="_blank">关注作者</a></p>
+        </el-collapse-item>
+      </el-collapse>
+    </div>
+    <div class="tip">
+      仅供学习使用，
+      <a href="https://icp.chinaz.com/zhouql.vip" target="_blank">豫备案号：zhouql.vip</a>
+    </div>
   </div>
-
-
-  <el-pagination style="text-align: center;display: flex;justify-content: center;margin-top: 10px"
-    :current-page="currentPage" :page-size="pageSize" :page-sizes="[10, 20, 30, 40]" :small="small" :disabled="disabled"
-    :background="background" layout="total, sizes, prev, pager, next, jumper" :total="total"
-    @size-change="handleSizeChange" @current-change="handleCurrentChange" />
-
 </template>
 
-<style scoped lang="css">
-.border-container {
-  padding: 5px;
-  border: 1px solid transparent;
-  border-radius: 6px;
-  transition: all .3s ease;
-}
+<script>
+import axios from "axios"
+axios.defaults.baseURL = "http://127.0.0.1:3000"
+let source;
+export default {
+  mounted() {
+    // add global <ctrl + b> clear input
+    document.body.addEventListener("keydown", e => {
+      if (e.ctrlKey && e.keyCode == 66) {
+        this.videoUrl = "";
+      }
+    });
+    // welcome tip
+    setTimeout(() => {
+      this.$notify({
+        title: "欢迎使用",
+        message: "欢迎使用本工具，愿你有个好心情✨",
+        type: "success",
+        duration: 2500
+      });
+    }, 200);
+    // input auto focus
+    document.querySelector("input").focus();
+    // print info in console
+    this.printInfo();
+  },
+  data() {
+    return {
+      activeNames: "",
+      // 视频url
+      videoUrl: "",
+      // 封面地址
+      bgUrl: "",
+      // 当前视频名
+      videoName: "",
+      // bv
+      bv: "",
+      // avid
+      avid: "",
+      // cid
+      cid: "",
+      // p，分集视频
+      p: "",
+      // 视频下载url
+      downloadUrl: "",
+      // 请求加载动画
+      loading: 0,
+      // 视频下载进度
+      progress: 0,
+      // 视频下载状态
+      downVideoStatus: false,
+      // 版本信息
+      info: Object.freeze({
+        version: "1.5",
+        author: "王子周棋洛✨",
+        name: "BiliBili视频下载",
+        desc: "此版本对新增下载进度，对下载视频命名进行处理，下载视频名即哔哩哔哩视频标题，同时进行了许多逻辑和ui优化",
+        link: "http://zhouql.vip/bilibili"
+      })
+    };
+  },
+  methods: {
+    cancelDownload() {
+      if (source) {
+        source.cancel('Operation canceled by the user.');
+      }
+      this.progress = 0;
+      this.downVideoStatus = false;
+    },
+    // 下载视频
+    downVideo() {
+      this.loading = 0;
+      this.$notify.closeAll();
+      this.$notify({
+        title: "下载中",
+        message: "视频正在下载中，请等待进度条...",
+        iconClass: "el-icon-loading",
+        duration: this.loading
+      });
+      source = axios.CancelToken.source();
+      this.downVideoStatus = true;
+      axios.get(`${this.downloadUrl}`, {
+        responseType: "blob",
+        cancelToken: source.token,
+        onDownloadProgress: evt => {
+          this.progress = parseInt((evt.loaded / evt.total) * 100);
+        }
+      }).then(resp => {
+        this.loading = 5;
+        let blobUrl = window.URL.createObjectURL(resp.data);
+        let a = document.createElement("a");
+        a.download = `${this.videoName}` + ".mp4";
+        a.href = blobUrl;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(blobUrl);
+        this.$notify.closeAll();
+        setTimeout(() => {
+          this.$notify({
+            title: "下载成功",
+            message: "视频下载成功！",
+            type: "success",
+            duration: 2000
+          });
+        }, 1000);
+      }).catch((error) => {
+        if (error.message == 'Operation canceled by the user.') {
+          this.$notify.closeAll();
+          // 提示取消成功
+          this.$notify({
+            title: "已取消",
+            message: "视频下载已取消。",
+            type: "success",
+            duration: 2000
+          });
+        }
+      })
+    },
+    // 百分比格式化
+    format(percentage) {
+      return percentage === 100 ? "满" : `${percentage}%`;
+    },
+    // 预览图片
+    openImg() {
+      window.open(this.imgUrl);
+    },
+    // 输入变化，重置数据
+    change() {
+      // 取消之前的异步请求
+      this.cancelDownload();
+      if (this.bgUrl) {
+        this.bgUrl = "";
+        this.progress = 0;
+        this.downVideoStatus = false;
+      }
+      if (this.downloadUrl) {
+        this.downloadUrl = "";
+        this.progress = 0;
+        this.downVideoStatus = false;
+      }
+    },
+    // 下载
+    download() {
+      this.change();
+      // 解析url，提取bv
+      this.parseUrl();
+      // 如果解析成功，即bv不等于空
+      if (this.bv) this.getAvidCidByBv();
+    },
+    // 解析url，提取bv等参数
+    parseUrl() {
+      this.loading = 0;
+      if (this.videoUrl != "") {
+        // 如果当前视频分片，获取p和bv
+        if (this.videoUrl.includes("?p=")) {
+          try {
+            // 获取当前p
+            this.p = this.videoUrl.split("?p=")[1].split("&")[0];
+            // 当前视频bv
+            this.bv = this.videoUrl.split("/video/")[1].split("?p=")[0];
+          } catch {
+            this.$notify.closeAll();
+            this.$notify({
+              title: "bv获取失败",
+              message: "很糟糕，bv获取失败了！请检查链接",
+              type: "error",
+              duration: 2000
+            });
+            return "";
+          }
+          //手机链接
+        } else if (this.videoUrl.includes("https://b23.tv")) {
+          // 手机端链接没有去除文字
+          if (this.videoUrl.startsWith("【")) {
+            this.videoUrl = this.videoUrl.split("】 ")[1];
+          }
+          // 手机端链接已经去除文字，不做处理
+          this.$notify.closeAll();
+          this.$notify({
+            title: "解析中",
+            message: "正在解析手机端链接...",
+            duration: this.loading,
+            iconClass: "el-icon-loading"
+          });
+          //请求获取响应内容
+          axios.get("/move?url=" + this.videoUrl).then(resp => {
+            if (resp.data) {
+              this.videoUrl = resp.data.split(`<meta data-vue-meta="true" itemprop="url" content="`)[1].split(`/">`)[0];
+              // 解析成功，正在请求消失
+              this.loading = 5;
+              // 成功提示
+              this.$notify.closeAll();
+              this.$notify({
+                title: "解析成功",
+                message: "手机端链接成功，准备解析下载地址...",
+                type: "success",
+                duration: 1500
+              });
+              setTimeout(() => this.download(), 1500);
+            } else {
+              this.$notify.closeAll();
+              this.$notify({
+                title: "解析失败",
+                message: "很糟糕，解析失败了...",
+                type: "error",
+                duration: 2000
+              });
+            }
+          });
+          // 普通视频，只用获取bv
+        } else {
+          try {
+            // 当前视频bv
+            this.bv = this.videoUrl
+              .split("/video/")[1]
+              .split("/?spm_id_from")[0];
+          } catch {
+            this.$notify.closeAll();
+            this.$notify({
+              title: "bv获取失败",
+              message: "很糟糕，bv获取失败了！请检查链接",
+              type: "error",
+              duration: 2000
+            });
+            return "";
+          }
+        }
+      } else {
+        this.$notify.closeAll();
+        this.$notify({
+          title: "错误提示",
+          message: "链接不能为空！请检查链接后重试",
+          type: "error",
+          duration: 2000
+        });
+      }
+    },
+    // 通过bv获取avid和cid
+    getAvidCidByBv() {
+      this.loading = 0;
+      this.bgUrl = "";
+      this.downloadUrl = "";
+      this.$notify.closeAll();
+      this.$notify({
+        title: "请求中",
+        message: "正在请求avid和cid...",
+        duration: this.loading,
+        iconClass: "el-icon-loading"
+      });
+      axios.get(`/av/${this.bv}`).then(resp => {
+        if (resp.data.code == 0) {
+          // 获取视频标题
+          this.videoName = resp.data.data.title;
+          // avid不需要特殊处理
+          this.avid = resp.data.data.aid;
+          // 获取封面
+          this.bgUrl = resp.data.data.pic;
+          // 如果分段p不等于空，就有多个cid，找出当前p的cid
+          if (this.p) {
+            try {
+              // 暂存一下pages数组
+              let pages = resp.data.data.pages;
+              // 获取cid
+              this.cid = pages[this.p - 1].cid;
+            } catch {
+              this.$notify.closeAll();
+              this.$notify.error({
+                title: "错误",
+                message: "bv解析错误，请检查链接...",
+                duration: 2000
+              });
+              return;
+            }
+            // 如果单个视频，直接返回pages[0]的cid
+          } else {
+            this.cid = resp.data.data.pages[0].cid;
+          }
+          // 解析成功，正在请求消失
+          this.loading = 5;
+          // 使用acid和cid获取视频地址
+          this.getDownloadUrl();
+        }
+        if (resp.data.code == "-400") {
+          this.$notify.closeAll();
+          this.$notify.error({
+            title: "错误",
+            message: "bv解析错误，请检查链接...",
+            duration: 2000
+          });
+        }
+      });
+    },
+    // 请求获取下载链接
+    getDownloadUrl() {
+      axios.get(`/download/${this.avid}/${this.cid}`).then(resp => {
+        this.downloadUrl = resp.data.data.durl[0].url;
+        if (this.downloadUrl) {
+          this.$notify.closeAll();
+          this.$notify({
+            title: "成功",
+            message: "视频和封面请求成功，快去下载吧",
+            type: "success",
+            duration: 2500
+          });
+          setTimeout(() => {
+            this.activeNames = "视频地址";
+          }, 250);
+          setTimeout(() => {
+            this.bv = "";
+            this.p = "";
+            this.avid = "";
+            this.cid = "";
+          }, 1500);
+        }
+      });
+    },
+    // 打印版本信息
+    printInfo() {
+      console.log(`version: ${this.info.version}`);
+      console.log(`author : ${this.info.author}`);
+      console.log(`name   : ${this.info.name}`);
+      console.log(`desc   : ${this.info.desc}`);
+      console.log(`link   : ${this.info.link}`);
+    }
+  },
+  computed: {
+    imgUrl() {
+      return "https" + this.bgUrl.substring(4);
+    }
+  }
+};
+</script>
 
-.border-container:hover {
-  border: 1px solid var(--ava);
-}
-
-.load-more {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  writing-mode: tb;
-  width: 38px;
-  padding: 12px 5px 12px 5px;
-  cursor: pointer;
-  user-select: none;
-  border-radius: 10px;
-  border: 1px solid var(--line_regular);
-  position: fixed;
-  right: 30px;
-  top: 40%;
-  background-color: rgba(255, 255, 255, 0.6);
-  transition: all .3s ease;
-  letter-spacing: 2px;
-}
-
-.load-more:hover {
-  background-color: rgb(225, 225, 225, 0.6);
-}
-
-.btn-hold {
-  transform: scale(0.9);
-}
-
-.main-view ul {
-  margin-top: 4.5%;
+<style scoped >
+* {
+  margin: 0;
   padding: 0;
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  align-items: flex-start;
-  height: auto;
-}
-
-.main-view li {
-  aspect-ratio: 16/11;
-  width: 20%;
-  padding: 5px;
   box-sizing: border-box;
 }
 
-.main-view li img {
-  object-fit: cover;
-  aspect-ratio: 16/9;
-  width: 100%;
-  cursor: pointer;
+.content {
+  padding: 16px 16px 160px;
 }
 
-.img-container {
-  border-radius: 6px;
-  overflow: hidden;
-}
-
-.main-view {
-  height: auto;
-  width: 100%;
+#test {
   display: flex;
-  flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-}
-
-.main-view section {
-  padding-top: 20px;
-  width: 80%;
-}
-
-
-.main-recommend-li-title {
-  height: 8vh;
-  overflow: hidden;
-  /* 对英文有效，在溢出处换行 */
-  word-break: break-all;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  font-size: 18px;
-  text-align: left;
-  transition: color .3s ease;
-  cursor: pointer;
-  color: #000;
-}
-
-.main-recommend-li-detail {
-  font-size: 18px;
-  display: flex;
   flex-direction: column;
-  width: 53%;
-  justify-content: flex-start;
-  align-items: flex-start;
-  color: rgb(129, 129, 129);
-  transition: color .3s ease;
-  cursor: pointer;
-  text-align: left;
-}
-
-.upName_span {
-  text-align: left;
-  width: 100%;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  text-overflow: ellipsis;
-  word-wrap: break-word;
-}
-
-.main-recommend-li-detail svg {
-  fill: rgb(129, 129, 129);
-  transition: fill .3s ease;
-}
-
-.main-recommend-li-detail-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 5px;
-}
-
-.main-recommend-li-detail-container span {
-  margin-left: 5px;
-}
-
-.main-recommend-li-detail-play {
-  display: flex;
-  align-items: center;
-  /* 垂直居中 */
-  padding-right: 5px;
-  white-space: nowrap;
-}
-
-.main-recommend-li-detail:hover {
-  color: var(--ava);
-}
-
-.main-recommend-li-detail:hover svg {
-  fill: var(--ava);
-}
-
-.main-recommend-li-title:hover {
-  color: var(--ava);
-}
-
-.loadmore {
-  font-size: 25px;
-  padding: 5px 0px 20px 0px;
-}
-
-.aside {
-  position: fixed;
-  right: 50px;
-  bottom: 50px;
-}
-
-.backtopShow-enter-active,
-.backtopShow-leave-active {
-  transition: all .3s ease;
-}
-
-.backtopShow-enter-from,
-.backtopShow-leave-to {
-  opacity: 0.0 !important;
-}
-
-.backtopShow-enter-to,
-.backtopShow-leave-from {
-  opacity: 1.0 !important;
-}
-
-@media screen and (max-width:550px) {
-  .main-view section {
+  min-height: 100vh;
+  .logo {
+    width: 35%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    img {
+      width: 30%;
+      margin-top: 200px;
+      user-select: none;
+    }
+  }
+  .input_search {
+    width: 45%;
+    margin-top: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    input {
+      width: 85%;
+      height: 45px;
+      padding-right: 20px;
+      border: 1px solid #888;
+      border-right: none;
+      border-radius: 7px 0 0 7px;
+      font-size: 16px;
+      color: #363636;
+      outline: none;
+      text-indent: 0.7em;
+      &::placeholder {
+        color: #979797;
+        font-size: 14px;
+      }
+    }
+    button {
+      width: 15%;
+      height: 45px;
+      border: none;
+      background-color: #1296db;
+      border-radius: 0 7px 7px 0;
+      font-size: 14px;
+      cursor: pointer;
+      position: relative;
+      letter-spacing: 0.1em;
+      color: #fff;
+      padding: 2px 4px;
+      outline: none;
+      user-select: none;
+    }
+  }
+  .use-info {
+    width: 44.5%;
+    user-select: none;
+  }
+  .tip {
+    position: fixed;
+    bottom: 0px;
+    left: 50%;
     width: 100%;
-  }
-
-  .main-view li {
-    width: 50%;
-    padding: 10px;
-  }
-
-  .aside {
-    bottom: 65px;
-    right: 30px;
-  }
-
-  .main-recommend-li-detail {
-    font-size: 14px;
-  }
-
-  .main-recommend-li-detail span {
-    font-size: 10px;
-    margin-left: 5px;
-  }
-
-  .main-recommend-li-detail svg {
-    height: 10px;
-    width: 10px;
-  }
-
-  .load-more {
-    display: none;
-  }
-
-  .options-li {
-    margin: 0 !important;
-  }
-}
-
-@media screen and (550px<width<=800px) {
-  .main-recommend-li-detail {
-    font-size: 14px;
-  }
-
-  .main-recommend-li-detail span {
-    font-size: 10px;
-    margin-left: 5px;
-  }
-
-  .main-recommend-li-detail svg {
-    height: 10px;
-    width: 10px;
-  }
-
-  .main-view li {
-    width: 33%;
-  }
-}
-
-@media screen and (800px<width<=1100px) {
-  .main-recommend-li-detail {
-    font-size: 14px;
-  }
-
-  .main-recommend-li-detail span {
-    font-size: 10px;
-    margin-left: 5px;
-  }
-
-  .main-recommend-li-detail svg {
-    height: 10px;
-    width: 10px;
-  }
-
-  .main-view li {
-    width: 25%;
-  }
-}
-
-@media screen and (1100px<width<=1500px) {
-  .main-recommend-li-detail {
-    font-size: 16px;
-  }
-
-  .main-recommend-li-detail span {
+    height: 30px;
+    background-color: #fefefeed;
+    text-align: center;
+    transform: translateX(-50%);
     font-size: 12px;
-    margin-left: 5px;
+    color: #949494;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    a {
+      text-decoration: none;
+      color: #1296db;
+    }
   }
-
-  .main-recommend-li-detail svg {
-    height: 12px;
-    width: 12px;
+  .van-cell::after {
+    border: none;
+  }
+  @media screen and (max-width: 600px) {
+    .logo {
+      width: 55%;
+      img {
+        width: 50%;
+      }
+    }
+    .input_search {
+      width: 90%;
+      input {
+        width: 85%;
+        height: 40px;
+      }
+      button {
+        width: 15%;
+        height: 40px;
+      }
+    }
+    .use-info {
+      width: 89%;
+    }
+  }
+  .el-collapse-item__header {
+    border: none;
+  }
+  .el-collapse-item__content {
+    padding-bottom: 7px;
+    p {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      color: #888;
+      padding: 0 0 10px 0;
+      a {
+        display: inline-block;
+        background-color: #eee;
+        color: #1296db;
+        font-weight: 700;
+        padding: 0px 10px;
+        border-radius: 100px;
+        margin-right: 20px;
+        height: 21px;
+        line-height: 21px;
+        font-size: 12px;
+        text-decoration: none;
+        transition: background-color 0.3s, color 0.1s;
+        &:hover {
+          background-color: #1296db;
+          color: #fcfcfc;
+        }
+      }
+    }
+  }
+  .tablist {
+    margin-bottom: 100px;
+  }
+  .el-progress-bar__inner {
+    background-color: #1296db;
+  }
+  .el-progress-bar {
+    padding-top: 12px;
+  }
+  .el-progress__text {
+    margin-left: 12px;
   }
 }
 </style>

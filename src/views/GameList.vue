@@ -14,7 +14,7 @@
 <!--            </el-col>-->
         </el-row>
         <el-row style="margin-top: 5.5%">
-            <dev style="margin: auto;">
+            <div style="margin: auto;">
                 <el-table :data="tableData"
                           style="background: aqua;">
                     <el-table-column prop="gameName" label="游戏" width="280"/>
@@ -26,8 +26,7 @@
                         </template>
                     </el-table-column>
                 </el-table>
-            </dev>
-
+            </div>
         </el-row>
     </div>
   </div>

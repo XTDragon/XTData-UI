@@ -4,8 +4,8 @@
 
     </Header>
     <a-layout-content>
-      <fc :game_id="game_id">
-      </fc>
+      <Fc :game_id="game_id">
+      </Fc>
     </a-layout-content>
     <a-layout-footer :style="{ textAlign: 'center' }">
       Ant Design ©2018 Created by Ant UED

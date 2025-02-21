@@ -1,6 +1,8 @@
 import axios from 'axios'
+import { getToken } from '@/utils/auth';
 
 const request = axios.create({
+    // baseURL: 'http://localhost:9098',
     timeout: 5000
 })
 
@@ -9,6 +11,10 @@ const request = axios.create({
 // 比如统一加token，对请求参数统一加密
 request.interceptors.request.use(config => {
     // config.headers['token'] = user.token;  // 设置请求头
+    const token = getToken("satoken");
+    if (token) {
+        config.headers!.satoken = `${token}`; // 添加 token 到请求头
+    }
     return config
 }, error => {
     return Promise.reject(error)
@@ -19,15 +25,14 @@ request.interceptors.request.use(config => {
 request.interceptors.response.use(
     response => {
         let res = response.data;
-        // console.log(res)
-        // // 如果是返回的文件
-        // if (response.config.responseType === 'blob') {
-        //     return res
-        // }
-        // // 兼容服务端返回的字符串数据
-        // if (typeof res === 'string') {
-        //     res = res ? JSON.parse(res) : res
-        // }
+        // 如果是返回的文件
+        if (response.config.responseType === 'blob') {
+            return res
+        }
+        // 兼容服务端返回的字符串数据
+        if (typeof res === 'string') {
+            res = res ? JSON.parse(res) : res
+        }
         return res;
     },
     error => {
